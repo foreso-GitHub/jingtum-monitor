@@ -4,7 +4,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/mem"
-	//"runtime"
+	"runtime"
 	"sync"
 )
 
@@ -12,13 +12,13 @@ var reqCount int32
 var hostname string
 
 type NodeCollector struct {
-	requestDesc *prometheus.Desc //Counter
-	nodeMetrics nodeStatsMetrics //混合方式
-	//goroutinesDesc *prometheus.Desc   //Gauge
-	//threadsDesc    *prometheus.Desc  //Gauge
-	//summaryDesc    *prometheus.Desc  //summary
-	//histogramDesc  *prometheus.Desc   //histogram
-	mutex sync.Mutex
+	requestDesc    *prometheus.Desc //Counter
+	nodeMetrics    nodeStatsMetrics //混合方式
+	goroutinesDesc *prometheus.Desc //Gauge
+	threadsDesc    *prometheus.Desc //Gauge
+	summaryDesc    *prometheus.Desc //summary
+	histogramDesc  *prometheus.Desc //histogram
+	mutex          sync.Mutex
 }
 
 //混合方式数据结构
@@ -56,26 +56,26 @@ func NewNodeCollector() prometheus.Collector {
 				eval:    func(ms *mem.VirtualMemoryStat) float64 { return float64(ms.Free) / 1e9 },
 			},
 		},
-		//goroutinesDesc:prometheus.NewDesc(
-		//	"goroutines_num",
-		//	"协程数.",
-		//	nil, nil),
-		//threadsDesc: prometheus.NewDesc(
-		//	"threads_num",
-		//	"线程数",
-		//	nil, nil),
-		//summaryDesc: prometheus.NewDesc(
-		//	"summary_http_request_duration_seconds",
-		//	"summary类型",
-		//	[]string{"code", "method"},
-		//	prometheus.Labels{"owner": "example"},
-		//),
-		//histogramDesc: prometheus.NewDesc(
-		//	"histogram_http_request_duration_seconds",
-		//	"histogram类型",
-		//	[]string{"code", "method"},
-		//	prometheus.Labels{"owner": "example"},
-		//),
+		goroutinesDesc: prometheus.NewDesc(
+			"goroutines_num",
+			"协程数.",
+			nil, nil),
+		threadsDesc: prometheus.NewDesc(
+			"threads_num",
+			"线程数",
+			nil, nil),
+		summaryDesc: prometheus.NewDesc(
+			"summary_http_request_duration_seconds",
+			"summary类型",
+			[]string{"code", "method"},
+			prometheus.Labels{"owner": "example"},
+		),
+		histogramDesc: prometheus.NewDesc(
+			"histogram_http_request_duration_seconds",
+			"histogram类型",
+			[]string{"code", "method"},
+			prometheus.Labels{"owner": "example"},
+		),
 	}
 }
 
@@ -86,10 +86,10 @@ func (n *NodeCollector) Describe(ch chan<- *prometheus.Desc) {
 	for _, metric := range n.nodeMetrics {
 		ch <- metric.desc
 	}
-	//ch <- n.goroutinesDesc
-	//ch <- n.threadsDesc
-	//ch <- n.summaryDesc
-	//ch <- n.histogramDesc
+	ch <- n.goroutinesDesc
+	ch <- n.threadsDesc
+	ch <- n.summaryDesc
+	ch <- n.histogramDesc
 }
 
 // Collect returns the current state of all metrics of the collector.
@@ -102,25 +102,25 @@ func (n *NodeCollector) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.MustNewConstMetric(metric.desc, metric.valType, metric.eval(vm))
 	}
 
-	//ch <- prometheus.MustNewConstMetric(n.goroutinesDesc, prometheus.GaugeValue, float64(runtime.NumGoroutine()))
-	//
-	//num, _ := runtime.ThreadCreateProfile(nil)
-	//ch <- prometheus.MustNewConstMetric(n.threadsDesc, prometheus.GaugeValue, float64(num))
-	//
-	////模拟数据
-	//ch <- prometheus.MustNewConstSummary(
-	//	n.summaryDesc,
-	//	4711, 403.34,
-	//	map[float64]float64{0.5: 42.3, 0.9: 323.3},
-	//	"200", "get",
-	//)
-	//
-	////模拟数据
-	//ch <- prometheus.MustNewConstHistogram(
-	//	n.histogramDesc,
-	//	4711, 403.34,
-	//	map[float64]uint64{25: 121, 50: 2403, 100: 3221, 200: 4233},
-	//	"200", "get",
-	//)
+	ch <- prometheus.MustNewConstMetric(n.goroutinesDesc, prometheus.GaugeValue, float64(runtime.NumGoroutine()))
+
+	num, _ := runtime.ThreadCreateProfile(nil)
+	ch <- prometheus.MustNewConstMetric(n.threadsDesc, prometheus.GaugeValue, float64(num))
+
+	//模拟数据
+	ch <- prometheus.MustNewConstSummary(
+		n.summaryDesc,
+		4711, 403.34,
+		map[float64]float64{0.5: 42.3, 0.9: 323.3},
+		"200", "get",
+	)
+
+	//模拟数据
+	ch <- prometheus.MustNewConstHistogram(
+		n.histogramDesc,
+		4711, 403.34,
+		map[float64]uint64{25: 121, 50: 2403, 100: 3221, 200: 4233},
+		"200", "get",
+	)
 	n.mutex.Unlock()
 }

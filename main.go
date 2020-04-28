@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/foreso-GitHub/jingtum-monitor/demo/collector"
 	"github.com/foreso-GitHub/jingtum-monitor/exporter"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -11,7 +10,7 @@ import (
 
 func init() {
 	//注册自身采集器
-	prometheus.MustRegister(collector.NewNodeCollector())
+	//prometheus.MustRegister(collector.NewNodeCollector())
 	prometheus.MustRegister(exporter.NewJtCollector())
 }
 
