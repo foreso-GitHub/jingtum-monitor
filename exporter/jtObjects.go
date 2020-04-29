@@ -4,12 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net/http"
-	"strconv"
-	"strings"
+	"log"
 )
-
-var m_ID = 1
 
 //region define jt objects
 
@@ -34,9 +30,9 @@ type JtBlock struct {
 }
 
 type JtNode struct {
-	Ip          string
-	Port        string
-	Name        string
+	Ip          string `json:"ip"`
+	Port        string `json:"port"`
+	Name        string `json:"name"`
 	Online      bool
 	Consensus   bool
 	BlockNumber int
@@ -44,8 +40,9 @@ type JtNode struct {
 }
 
 type JtNetwork struct {
+	Name               string `json:"name"`
 	NodeCount          int
-	NodeList           []JtNode
+	NodeList           []JtNode `json:"nodes"`
 	OnlineNodeCount    int
 	OnlineRate         float32
 	ConsensusNodeCount int
@@ -54,11 +51,20 @@ type JtNetwork struct {
 	LatestBlock        JtBlock
 }
 
+type JtResponseJson struct {
+	Jsonrpc string `json:"jsonrpc"`
+	Id      int    `json:"id"`
+	Status  string `json:"status"`
+}
+
 type BlockNumberJson struct {
-	Jsonrpc     string `json:"jsonrpc"`
-	Id          int    `json:"id"`
-	Status      string `json:"status"`
-	BlockNumber int    `json:"result"`
+	JtResponseJson
+	BlockNumber int `json:"result"`
+}
+
+type BlockJson struct {
+	JtResponseJson
+	Block JtBlock `json:"result"`
 }
 
 //endregion
@@ -68,8 +74,12 @@ func FlushNode(node *JtNode) {
 	contentType := "application/json"
 	jsonString, err := GetBlockNumber(url, contentType)
 	if err != nil {
-		fmt.Println("================[jt_blockNumber] error==")
+		fmt.Println("================[jt_blockNumber] error==", node.Name)
 		fmt.Println(err)
+		node.Online = false
+	} else if string(jsonString[:]) == "Bad Request\n" {
+		fmt.Println("================[jt_blockNumber] error==", node.Name)
+		fmt.Println("Bad Request")
 		node.Online = false
 	} else {
 		node.Online = true
@@ -84,93 +94,61 @@ func FlushNode(node *JtNode) {
 		node.BlockNumber = -1
 	}
 
+	jsonString, err = GetBlockByNumber(url, contentType, node.BlockNumber)
+	if err != nil {
+		fmt.Println("================[jt_getBlockByNumber] error==", node.Name)
+		fmt.Println(err)
+	} else if string(jsonString[:]) == "Bad Request\n" {
+		fmt.Println("================[jt_getBlockByNumber] error==", node.Name)
+		fmt.Println("Bad Request")
+	}
+	var blockJson BlockJson
+	if err := json.Unmarshal(jsonString, &blockJson); err == nil {
+		//fmt.Println("================json str 转BlockNumberJson==")
+		//fmt.Println(blockNumberJson)
+		//fmt.Println(blockNumberJson.BlockNumber)
+		node.LatestBlock = blockJson.Block
+	}
+
 	fmt.Println(node)
-
-	//params_getBlockNumber := strings.NewReader("{\"jsonrpc\":\"2.0\",\"method\":\"jt_blockNumber\",\"params\":[],\"id\":1}")
-
 }
 
-func FlushNetwork() JtNetwork {
-	var network JtNetwork
-	network.NodeCount = 3
+func FlushNetwork(network *JtNetwork) {
+	network.NodeCount = len(network.NodeList)
 	network.BlockNumber = -1
 	network.OnlineNodeCount = 0
 	network.ConsensusNodeCount = 0
-	network.NodeList = make([]JtNode, network.NodeCount)
-
 	for i := 0; i < network.NodeCount; i++ {
-		var node JtNode
-		node.Name = "Node_" + strconv.Itoa(i+1)
-		node.Ip = "139.198.177.59"
-		node.Port = "9545"
-		FlushNode(&node)
-		network.NodeList[i] = node
-
+		node := &network.NodeList[i]
+		FlushNode(node)
 		if network.BlockNumber < node.BlockNumber {
 			network.BlockNumber = node.BlockNumber
+			network.LatestBlock = node.LatestBlock
 		}
-
 		if node.Online {
 			network.OnlineNodeCount++
 		}
 	}
-
 	for i := 0; i < network.NodeCount; i++ {
 		network.NodeList[i].Consensus = network.BlockNumber-network.NodeList[i].BlockNumber <= 2
 		if network.NodeList[i].Consensus {
 			network.ConsensusNodeCount++
 		}
 	}
-
 	network.OnlineRate = float32(network.OnlineNodeCount) / float32(network.NodeCount) * 100
 	network.ConsensusRate = float32(network.ConsensusNodeCount) / float32(network.NodeCount) * 100
-
 	fmt.Println(network)
+}
 
+func LoadJtNetworkConfig(path string) JtNetwork {
+	var network JtNetwork
+	buf, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Panicln("load config file failed: ", err)
+	}
+	err = json.Unmarshal(buf, &network)
+	if err != nil {
+		log.Panicln("decode config file failed:", string(buf), err)
+	}
 	return network
 }
-
-//region jt library
-
-func GetBlockNumber(url string, contentType string) ([]byte, error) {
-	params := GenerateRequest("jt_blockNumber", "")
-	return Post(url, contentType, params)
-}
-
-func GetBlockByNumber(url string, contentType string, blockNumber int) ([]byte, error) {
-	//params_getBlockNumber := "{\"jsonrpc\":\"2.0\",\"method\":\"jt_getBlockByNumber\"," +
-	//	"\"params\":[" + strconv.Itoa(blockNumber) + ",false],\"id\":1}"
-	params := GenerateRequest("jt_getBlockByNumber", strconv.Itoa(blockNumber)+",false")
-	return Post(url, contentType, params)
-}
-
-func GenerateRequest(method string, params string) string {
-	request := "{\"jsonrpc\":\"2.0\",\"id\":"
-	request += strconv.Itoa(m_ID)
-	m_ID += 1
-
-	request += ",\"method\":\""
-	request += method
-
-	request += "\",\"params\":["
-	request += params
-
-	request += "]}"
-
-	//fmt.Println(request)
-	return request
-}
-
-func Post(url string, contentType string, params string) ([]byte, error) {
-	reader := strings.NewReader(params)
-	resp, err := http.Post(url, contentType, reader)
-	if err != nil {
-		//fmt.Println("================[jt_blockNumber] error==")
-		//fmt.Println(err)
-		return nil, err
-	}
-	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
-}
-
-//endregion

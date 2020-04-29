@@ -1,0 +1,10 @@
+{
+  "name":"Jingtum Network @ box-admin.elerp.net",
+  "nodes": [
+    {"name":"Node_1","ip":"box-admin.elerp.net","port":"10201"},
+    {"name":"Node_2","ip":"box-admin.elerp.net","port":"10202"},
+    {"name":"Node_3","ip":"box-admin.elerp.net","port":"10203"},
+    {"name":"Node_4","ip":"box-admin.elerp.net","port":"10204"},
+    {"name":"Node_5","ip":"box-admin.elerp.net","port":"10205"}
+  ]
+}

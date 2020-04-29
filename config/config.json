@@ -1,0 +1,4 @@
+{
+  "exportAddress": ":8080",
+  "jtConfigPath":"./config/jt_config.json"
+}

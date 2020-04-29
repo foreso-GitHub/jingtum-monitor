@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/foreso-GitHub/jingtum-monitor/common"
 	"github.com/foreso-GitHub/jingtum-monitor/exporter"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -15,8 +16,9 @@ func init() {
 }
 
 func main() {
+	config := common.LoadConfig("./config/config.json")
 	http.Handle("/metrics", promhttp.Handler())
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(config.ExportAddress, nil); err != nil {
 		fmt.Printf("Error occur when start server %v", err)
 	}
 }

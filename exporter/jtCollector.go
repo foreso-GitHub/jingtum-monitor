@@ -2,12 +2,15 @@ package exporter
 
 import (
 	"fmt"
+	"github.com/foreso-GitHub/jingtum-monitor/common"
 	"github.com/prometheus/client_golang/prometheus"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"sync"
 )
+
+var config = common.LoadConfig("./config/config.json")
 
 var nodeCount int32
 var onlineNodeCount int32
@@ -51,7 +54,8 @@ func (n *JtCollector) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (n *JtCollector) Collect(ch chan<- prometheus.Metric) {
-	network := FlushNetwork()
+	network := LoadJtNetworkConfig(config.JtConfigPath)
+	FlushNetwork(&network)
 	n.guard.Lock()
 	ch <- prometheus.MustNewConstMetric(n.nodeCountDesc, prometheus.GaugeValue, float64(network.NodeCount))
 	ch <- prometheus.MustNewConstMetric(n.onlineNodeCountDesc, prometheus.GaugeValue, float64(network.OnlineNodeCount))
