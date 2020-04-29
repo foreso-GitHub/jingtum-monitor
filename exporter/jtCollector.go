@@ -1,12 +1,8 @@
 package exporter
 
 import (
-	"fmt"
 	"github.com/foreso-GitHub/jingtum-monitor/common"
 	"github.com/prometheus/client_golang/prometheus"
-	"io/ioutil"
-	"net/http"
-	"strings"
 	"sync"
 )
 
@@ -62,23 +58,4 @@ func (n *JtCollector) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(n.consensusNodeCountDesc, prometheus.GaugeValue, float64(network.ConsensusNodeCount))
 	ch <- prometheus.MustNewConstMetric(n.jtBlockNumberDesc, prometheus.GaugeValue, float64(network.BlockNumber))
 	n.guard.Unlock()
-}
-
-func GetBlockNumberInfo() []byte {
-	url := "http://139.198.177.59:9545/v1/jsonrpc" //请求地址
-	contentType := "application/json"
-	data := strings.NewReader("{\"jsonrpc\":\"2.0\",\"method\":\"jt_blockNumber\",\"params\":[],\"id\":1}")
-	resp, err := http.Post(url, contentType, data)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//bodyString := string(body[:])
-	//fmt.Printf("[GetBlockNumber] response:%s\n",bodyString)
-	return body
 }
