@@ -13,11 +13,14 @@ var onlineNodeCount int32
 var consensusNodeCount int32
 var blockNumber int32
 
+//var blockTxCount int32
+
 type JtCollector struct {
 	nodeCountDesc          *prometheus.Desc
 	onlineNodeCountDesc    *prometheus.Desc
 	consensusNodeCountDesc *prometheus.Desc
 	jtBlockNumberDesc      *prometheus.Desc
+	jtBlockTxCountDesc     *prometheus.Desc
 	guard                  sync.Mutex
 }
 
@@ -39,6 +42,10 @@ func NewJtCollector() prometheus.Collector {
 			"jt_block_number",
 			"井通区块链网络当前的区块高度",
 			nil, nil),
+		jtBlockTxCountDesc: prometheus.NewDesc(
+			"jt_current_block_tx_count",
+			"井通区块链网络当前区块交易数",
+			nil, nil),
 	}
 }
 
@@ -47,6 +54,7 @@ func (n *JtCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- n.onlineNodeCountDesc
 	ch <- n.consensusNodeCountDesc
 	ch <- n.jtBlockNumberDesc
+	ch <- n.jtBlockTxCountDesc
 }
 
 func (n *JtCollector) Collect(ch chan<- prometheus.Metric) {
@@ -57,5 +65,6 @@ func (n *JtCollector) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(n.onlineNodeCountDesc, prometheus.GaugeValue, float64(network.OnlineNodeCount))
 	ch <- prometheus.MustNewConstMetric(n.consensusNodeCountDesc, prometheus.GaugeValue, float64(network.ConsensusNodeCount))
 	ch <- prometheus.MustNewConstMetric(n.jtBlockNumberDesc, prometheus.GaugeValue, float64(network.BlockNumber))
+	ch <- prometheus.MustNewConstMetric(n.jtBlockTxCountDesc, prometheus.GaugeValue, float64(len(network.LatestBlock.Transactions)))
 	n.guard.Unlock()
 }
