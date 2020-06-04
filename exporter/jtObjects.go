@@ -71,43 +71,16 @@ type BlockJson struct {
 
 func FlushNode(node *JtNode) {
 	url := "http://" + node.Ip + ":" + node.Port + "/v1/jsonrpc" //请求地址
-	contentType := "application/json"
-	jsonString, err := GetBlockNumber(url, contentType)
+
+	blockNumber, err := GetBlockNumber(url)
 	if err != nil {
-		fmt.Println("================[jt_blockNumber] error==", node.Name)
-		fmt.Println(err)
-		node.Online = false
-	} else if string(jsonString[:]) == "Bad Request\n" {
-		fmt.Println("================[jt_blockNumber] error==", node.Name)
-		fmt.Println("Bad Request")
 		node.Online = false
 	} else {
 		node.Online = true
 	}
-	var blockNumberJson BlockNumberJson
-	if err := json.Unmarshal(jsonString, &blockNumberJson); err == nil {
-		//fmt.Println("================json str 转BlockNumberJson==")
-		//fmt.Println(blockNumberJson)
-		//fmt.Println(blockNumberJson.BlockNumber)
-		node.BlockNumber = blockNumberJson.BlockNumber
-	} else {
-		node.BlockNumber = -1
-	}
 
-	jsonString, err = GetBlockByNumber(url, contentType, node.BlockNumber)
-	if err != nil {
-		fmt.Println("================[jt_getBlockByNumber] error==", node.Name)
-		fmt.Println(err)
-	} else if string(jsonString[:]) == "Bad Request\n" {
-		fmt.Println("================[jt_getBlockByNumber] error==", node.Name)
-		fmt.Println("Bad Request")
-	}
-	var blockJson BlockJson
-	if err := json.Unmarshal(jsonString, &blockJson); err == nil {
-		//fmt.Println("================json str 转BlockNumberJson==")
-		//fmt.Println(blockNumberJson)
-		//fmt.Println(blockNumberJson.BlockNumber)
-		node.LatestBlock = blockJson.Block
+	if block, err := GetBlockByNumber(url, blockNumber); err == nil {
+		node.LatestBlock = *block
 	}
 
 	fmt.Println(node)
