@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/foreso-GitHub/jingtum-monitor/demo/collector"
+	"github.com/foreso-GitHub/jingtum-monitor/demo/demo1/collector"
 	"github.com/foreso-GitHub/jingtum-monitor/exporter"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
