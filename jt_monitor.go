@@ -9,6 +9,24 @@ import (
 	"net/http"
 )
 
+//import (
+//	"fmt"
+//	"github.com/foreso-GitHub/jingtum-monitor/common"
+//	"github.com/foreso-GitHub/jingtum-monitor/exporter"
+//	"github.com/prometheus/client_golang/prometheus"
+//	"github.com/prometheus/client_golang/prometheus/promhttp"
+//	"net/http"
+//)
+
+//import (
+//	"fmt"
+//	"github.com/foreso-GitHub/jingtum-monitor/common"
+//	"github.com/foreso-GitHub/jingtum-monitor/exporter"
+//	"github.com/prometheus/client_golang/prometheus"
+//	"github.com/prometheus/client_golang/prometheus/promhttp"
+//	"net/http"
+//)
+
 func init() {
 	//注册自身采集器
 	//prometheus.MustRegister(collector.NewNodeCollector())

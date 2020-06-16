@@ -1,0 +1,8 @@
+{
+  "user": "jt",
+  "password":"jt",
+  "host": "box.elerp.net",
+  "port":2003,
+  "command": "/home/jt/start.sh",
+  "mode":1
+}

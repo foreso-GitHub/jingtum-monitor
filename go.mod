@@ -9,4 +9,5 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/prometheus/client_golang v1.5.1
 	github.com/shirou/gopsutil v2.20.3+incompatible
+	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
 )
