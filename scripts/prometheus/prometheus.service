@@ -1,0 +1,11 @@
+[Unit]
+Description=Prometheus Service
+After=network-pre.target network-manager.service network-online.target network.target networking.service
+[Service]
+Type=idle
+WorkingDirectory=/opt/prometheus-2.17.2.linux-amd64/
+User=root
+ExecStart=/bin/bash /opt/prometheus-2.17.2.linux-amd64/start.sh
+Restart=always
+[Install]
+WantedBy=multi-user.target

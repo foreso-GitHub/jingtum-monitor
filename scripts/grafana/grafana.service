@@ -1,0 +1,11 @@
+[Unit]
+Description=Grafana Service
+After=network-pre.target network-manager.service network-online.target network.target networking.service
+[Service]
+Type=idle
+WorkingDirectory=/opt/grafana-6.7.3/
+User=root
+ExecStart=/bin/bash /opt/grafana-6.7.3/start.sh
+Restart=always
+[Install]
+WantedBy=multi-user.target

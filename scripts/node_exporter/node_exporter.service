@@ -1,0 +1,11 @@
+[Unit]
+Description=Node Exporter Service
+After=network-pre.target network-manager.service network-online.target network.target networking.service
+[Service]
+Type=idle
+WorkingDirectory=/opt/node_exporter-0.18.1.linux-amd64/
+User=root
+ExecStart=/bin/bash /opt/node_exporter-0.18.1.linux-amd64/start.sh
+Restart=always
+[Install]
+WantedBy=multi-user.target
