@@ -1,28 +1,33 @@
 #!/bin/bash
 home="/jt/monitor"
-mkdir -p $home
-cd $home
-
-path_install="/opt"
+#path_install="/opt"
 path_system="/lib/systemd/system"
 file_name_prometheus="prometheus-2.17.2.linux-amd64"
 file_name_prometheus_service="prometheus.service"
 url_prometheus="https://www.yiyuen.com/e/file/download?code=067c0871e41dac2b&id=27821"
 
 #install prometheus
-cd $path_install
+mkdir -p $home
+cd $home
 pwd
+
 #clear old versions
 rm prometheus*.* -fr
+
 #download prometheus
 output=`wget -O $file_name_prometheus.tar.gz $url_prometheus`
 echo $output
+
 #decompress
-sudo tar -zxvf $path_install/$file_name_prometheus.tar.gz
+sudo tar -zxvf $home/$file_name_prometheus.tar.gz
 cd $file_name_prometheus
+
+#cp yml file
+#cp $home/prometheus.yml $home/$file_name_prometheus/prometheus.yml
+
 #create yml file
 (
-cat <<EOF
+cat <<-EOF
 # my global config
 global:
   scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
@@ -60,11 +65,11 @@ scrape_configs:
   - job_name: "jt_node_al_2"
     static_configs:
     - targets: ["121.89.212.154:9100"]
-    
+
   - job_name: "jt_node_al_3"
     static_configs:
     - targets: ["121.89.207.217:9100"]
-    
+
   - job_name: "jt_node_al_4"
     static_configs:
     - targets: ["121.89.206.115:9100"]
@@ -72,7 +77,7 @@ scrape_configs:
   - job_name: "jt_node_al_5"
     static_configs:
     - targets: ["121.89.198.119:9100"]
-    
+
   - job_name: "jt-node-bd"
     static_configs:
     - targets: ["180.76.125.22:9100"]
@@ -84,17 +89,18 @@ scrape_configs:
   - job_name: "jt-node-hw"
     static_configs:
     - targets: ["121.37.216.100:9100"]
-    
+
   - job_name: "jt-node-ty"
     static_configs:
     - targets: ["61.171.12.71:9100"]
 
-
 EOF
-) >$path_install/$file_name_prometheus/prometheus.yml
+) >$home/$file_name_prometheus/prometheus.yml
+
 #create start script
-echo './prometheus' >$path_install/$file_name_prometheus/start.sh
-chmod u+x $path_install/$file_name_prometheus/start.sh
+echo './prometheus' >$home/$file_name_prometheus/start.sh
+chmod u+x $home/$file_name_prometheus/start.sh
+
 #create service file
 (
 cat <<EOF
@@ -103,19 +109,21 @@ Description=Prometheus Service
 After=network-pre.target network-manager.service network-online.target network.target networking.service
 [Service]
 Type=idle
-WorkingDirectory=$path_install/$file_name_prometheus/
+WorkingDirectory=$home/$file_name_prometheus/
 User=root
-ExecStart=/bin/bash $path_install/$file_name_prometheus/start.sh
+ExecStart=/bin/bash $home/$file_name_prometheus/start.sh
 Restart=always
 [Install]
 WantedBy=multi-user.target
 
 EOF
 ) >$path_system/$file_name_prometheus_service
+
 #reload and run
 sudo systemctl daemon-reload
 sudo systemctl start prometheus
 sudo systemctl status prometheus
-sudo journalctl -f -u prometheus
+#sudo journalctl -f -u prometheus
+cd $home
 
 

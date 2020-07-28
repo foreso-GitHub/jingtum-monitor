@@ -1,16 +1,16 @@
 #!/bin/bash
 home="/jt/monitor"
-mkdir -p $home
-cd $home
 
-path_install="/opt"
+
+#path_install="/opt"
 path_system="/lib/systemd/system"
 file_name_grafana="grafana-6.7.3"
 file_name_grafana_service="grafana.service"
 url_grafana="https://www.yiyuen.com/e/file/download?code=8ead1816bbc43aa5&id=27827"
 
 #install grafana
-cd $path_install
+mkdir -p $home
+cd $home
 pwd
 #clear old versions
 rm grafana*.* -fr
@@ -18,11 +18,11 @@ rm grafana*.* -fr
 output=`wget -O $file_name_grafana.tar.gz $url_grafana`
 echo $output
 #decompress
-sudo tar -zxvf $path_install/$file_name_grafana.tar.gz
+sudo tar -zxvf $home/$file_name_grafana.tar.gz
 cd $file_name_grafana
 #create start script
-echo './bin/grafana-server web' >$path_install/$file_name_grafana/start.sh
-chmod u+x $path_install/$file_name_grafana/start.sh
+echo './bin/grafana-server web' >$home/$file_name_grafana/start.sh
+chmod u+x $home/$file_name_grafana/start.sh
 #create service file
 (
 cat <<EOF
@@ -31,9 +31,9 @@ Description=grafana Service
 After=network-pre.target network-manager.service network-online.target network.target networking.service
 [Service]
 Type=idle
-WorkingDirectory=$path_install/$file_name_grafana/
+WorkingDirectory=$home/$file_name_grafana/
 User=root
-ExecStart=/bin/bash $path_install/$file_name_grafana/start.sh
+ExecStart=/bin/bash $home/$file_name_grafana/start.sh
 Restart=always
 [Install]
 WantedBy=multi-user.target
@@ -44,6 +44,6 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl start grafana
 sudo systemctl status grafana
-sudo journalctl -f -u grafana
+#sudo journalctl -f -u grafana
 
-
+cd $home
