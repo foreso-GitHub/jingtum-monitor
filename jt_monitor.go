@@ -9,24 +9,6 @@ import (
 	"net/http"
 )
 
-//import (
-//	"fmt"
-//	"github.com/foreso-GitHub/jingtum-monitor/common"
-//	"github.com/foreso-GitHub/jingtum-monitor/exporter"
-//	"github.com/prometheus/client_golang/prometheus"
-//	"github.com/prometheus/client_golang/prometheus/promhttp"
-//	"net/http"
-//)
-
-//import (
-//	"fmt"
-//	"github.com/foreso-GitHub/jingtum-monitor/common"
-//	"github.com/foreso-GitHub/jingtum-monitor/exporter"
-//	"github.com/prometheus/client_golang/prometheus"
-//	"github.com/prometheus/client_golang/prometheus/promhttp"
-//	"net/http"
-//)
-
 func init() {
 	//注册自身采集器
 	//prometheus.MustRegister(collector.NewNodeCollector())
@@ -34,7 +16,7 @@ func init() {
 }
 
 func main() {
-	test()
+	//test()
 
 	config := common.LoadConfig("./config/config.json")
 	http.Handle("/metrics", promhttp.Handler())
@@ -49,22 +31,24 @@ func test() {
 }
 
 func testLibrary() {
-	url := "http://" + "box-admin.elerp.net" + ":" + "10201" + "/v1/jsonrpc" //请求地址
+	//url := "http://" + "box-admin.elerp.net" + ":" + "10201" + "/v1/jsonrpc" //请求地址
+	url := "http://" + "180.76.125.22" + ":" + "9545" + "/v1/jsonrpc" //请求地址
 	fmt.Printf("Url: %v", url)
 
 	blockNumber, err := exporter.GetBlockNumber(url)
-	fmt.Println("blockNumber: %v", blockNumber)
-	fmt.Println("blockNumber err: %v", err)
+	fmt.Printf("blockNumber: %v\n", blockNumber)
+	fmt.Printf("blockNumber err: %v\n", err)
 	block, err := exporter.GetBlockByNumber(url, blockNumber)
-	fmt.Println("block: %+v", block)
-	fmt.Println("block err: %v", err)
+	fmt.Printf("block: %+v\n", block)
+	fmt.Printf("block err: %v\n", err)
 }
 
 func testTps() {
-	url := "http://" + "box-admin.elerp.net" + ":" + "10201" + "/v1/jsonrpc" //请求地址
-	fmt.Println("Url: %v", url)
+	//url := "http://" + "box-admin.elerp.net" + ":" + "10201" + "/v1/jsonrpc" //请求地址
+	url := "http://" + "180.76.125.22" + ":" + "9545" + "/v1/jsonrpc" //请求地址
+	fmt.Printf("Url: %v\n", url)
 	status := exporter.InitJtTpsStatus()
 	flushOK := exporter.FlushTpsStatus(url, status)
-	fmt.Println("flushOK: %+v", flushOK)
-	fmt.Println("flushOK: %+v", status)
+	fmt.Printf("flushOK: %+v\n", flushOK)
+	fmt.Printf("flushOK: %+v\n", status)
 }

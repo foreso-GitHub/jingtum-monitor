@@ -50,7 +50,7 @@ func InitJtTpsStatus() *JtTpsStatus {
 	AddJtTps("最近一小时TPS", 1*12*60, status)
 	AddJtTps("最近一天TPS", 1*12*60*24, status)
 	AddJtTps("最近一周TPS", 1*12*60*24*7, status)
-	fmt.Println("status: %+v", status)
+	fmt.Printf("status: %+v\n", status)
 	return status
 }
 
@@ -62,7 +62,7 @@ func InitJtTps(name string, blockCount int) *JtTps {
 	tps.TxCount = 0
 	tps.Tps = 0
 	tps.Blocks = make([]JtBlock, 0)
-	fmt.Println("tps: %+v", tps)
+	fmt.Printf("tps: %+v\n", tps)
 	return tps
 }
 
@@ -88,8 +88,8 @@ func FlushTpsStatus(url string, status *JtTpsStatus) bool {
 			lastBlockNumber = newblockNumber - gap
 		}
 
-		fmt.Println("lastBlockNumber: %+v", lastBlockNumber)
-		fmt.Println("newblockNumber: %+v", newblockNumber)
+		fmt.Printf("lastBlockNumber: %+v\n", lastBlockNumber)
+		fmt.Printf("newblockNumber: %+v\n", newblockNumber)
 
 		if newblockNumber > lastBlockNumber {
 			for blockNumber := lastBlockNumber + 1; blockNumber <= newblockNumber; blockNumber++ {
@@ -97,8 +97,8 @@ func FlushTpsStatus(url string, status *JtTpsStatus) bool {
 					//txCount := len(block.Transactions)
 					txCount := rand.Intn(100)         //todo: fake tx count, need be deleted later.
 					block.Parent_close_time = txCount //todo: use Parent_close_time to transfer fake tx count, need be deleted later.
-					fmt.Println("blockNumber: %+v", blockNumber)
-					fmt.Println("tx count: %+v", txCount)
+					fmt.Printf("blockNumber: %+v\n", blockNumber)
+					fmt.Printf("tx count: %+v\n", txCount)
 
 					block := *block
 					status.Blocks = append(status.Blocks, block)
@@ -144,7 +144,7 @@ func FlushSingleTps(tps JtTps, blocks []JtBlock) error {
 		tps.TxCount += blocks[i].Parent_close_time
 	}
 	tps.Tps = float64(tps.TxCount) / float64(tps.Period)
-	fmt.Println("===flush tps: %+v", tps)
+	fmt.Printf("===flush tps: %+v\n", tps)
 	return nil
 }
 
