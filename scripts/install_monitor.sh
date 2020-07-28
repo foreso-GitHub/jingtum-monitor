@@ -19,8 +19,14 @@ home="/jt/monitor"
 #systemctl status prometheus
 #systemctl status grafana
 #
-#sed -i 's/\r//' install_prometheus.sh
-#bash ./install_prometheus.sh
+#systemctl enable node_exporter
+#systemctl enable prometheus
+#systemctl enable grafana
+#
+#systemctl start node_exporter
+#systemctl start prometheus
+#systemctl start grafana
+
 
 #worked!
 mkdir -p $home

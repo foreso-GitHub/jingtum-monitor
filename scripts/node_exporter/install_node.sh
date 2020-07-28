@@ -42,6 +42,7 @@ EOF
 ) >$path_system/$file_name_node_exporter_service
 #reload and run
 sudo systemctl daemon-reload
+sudo systemctl enable node_exporter
 sudo systemctl start node_exporter
 sudo systemctl status node_exporter
 #sudo journalctl -f -u node_exporter
