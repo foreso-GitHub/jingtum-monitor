@@ -3,6 +3,6 @@
   "password":"jt",
   "host": "box.elerp.net",
   "port":2003,
-  "command": "/home/jt/start.sh",
+  "command": "/home/jt/stop.sh",
   "mode":1
 }

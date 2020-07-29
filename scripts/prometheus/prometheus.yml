@@ -28,6 +28,10 @@ scrape_configs:
     static_configs:
     - targets: ['localhost:9090']
 
+    - job_name: "jt_monitor"
+      static_configs:
+        - targets: ["localhost:9101"]
+
   - job_name: "jt_node_al_1"
     static_configs:
     - targets: ["121.89.209.19:9100"]
