@@ -35,9 +35,9 @@ type JtTpsStatus struct {
 
 //region init
 
-func InitJtTpsStatus() *JtTpsStatus {
+func CreateJtTpsStatus(initBlockNumber int) *JtTpsStatus {
 	status := new(JtTpsStatus)
-	status.CurrentBlockNumber = -1
+	status.CurrentBlockNumber = initBlockNumber
 	status.BlockMap = make(map[int]JtBlock)
 	status.Blocks = make([]JtBlock, 0)
 	status.TotalBlockCount = 0
@@ -50,7 +50,7 @@ func InitJtTpsStatus() *JtTpsStatus {
 	AddJtTps("最近一小时TPS", 1*12*60, status)
 	AddJtTps("最近一天TPS", 1*12*60*24, status)
 	AddJtTps("最近一周TPS", 1*12*60*24*7, status)
-	fmt.Printf("status: %+v\n", status)
+	//fmt.Printf("status: %+v\n", status)
 	return status
 }
 
@@ -62,7 +62,7 @@ func InitJtTps(name string, blockCount int) *JtTps {
 	tps.TxCount = 0
 	tps.Tps = 0
 	tps.Blocks = make([]JtBlock, 0)
-	fmt.Printf("tps: %+v\n", tps)
+	//fmt.Printf("tps: %+v\n", tps)
 	return tps
 }
 
@@ -83,10 +83,10 @@ func FlushTpsStatus(url string, status *JtTpsStatus) bool {
 		lastBlockNumber := status.CurrentBlockNumber
 
 		//todo: for test only
-		gap := 3
-		if newblockNumber > gap {
-			lastBlockNumber = newblockNumber - gap
-		}
+		//gap := 3
+		//if newblockNumber > gap {
+		//	lastBlockNumber = newblockNumber - gap
+		//}
 
 		fmt.Printf("lastBlockNumber: %+v\n", lastBlockNumber)
 		fmt.Printf("newblockNumber: %+v\n", newblockNumber)

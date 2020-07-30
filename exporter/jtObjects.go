@@ -3,6 +3,7 @@ package exporter
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/foreso-GitHub/jingtum-monitor/common"
 	"io/ioutil"
 	"log"
 )
@@ -125,4 +126,29 @@ func LoadJtNetworkConfig(path string) JtNetwork {
 		log.Panicln("decode config file failed:", string(buf), err)
 	}
 	return network
+}
+
+func GetUrlFromNode(node *JtNode) string {
+	url := "http://" + node.Ip + ":" + node.Port + "/v1/jsonrpc" //请求地址
+	return url
+}
+
+func PickNode(nodes []JtNode) *JtNode {
+	count := len(nodes)
+	if count > 0 {
+		index := common.Rand(count)
+		return &nodes[index]
+	} else {
+		return nil
+	}
+}
+
+func GetRandUrl(nodes []JtNode) string {
+	node := PickNode(nodes)
+	url := GetUrlFromNode(node)
+	_, error := GetBlockNumber(url)
+	if error != nil {
+		return GetRandUrl(nodes)
+	}
+	return url
 }
