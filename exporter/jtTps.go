@@ -112,13 +112,26 @@ func FlushTpsStatus(url string, status *JtTpsStatus) bool {
 
 					//reflush tps list, only flush on last block
 					if blockNumber == newblockNumber {
-						for _, tps := range status.TpsMap {
+						//for _, tps := range status.TpsMap {
+						//	blockCount := tps.BlockCount
+						//	if blockCount <= status.TotalBlockCount {
+						//		start := status.TotalBlockCount - blockCount
+						//		end := status.TotalBlockCount
+						//		flushBlocks := status.Blocks[start:end]
+						//		FlushSingleTps(&tps, flushBlocks)
+						//		status.TpsMap[blockCount] = tps
+						//	}
+						//}
+
+						for key, _ := range status.TpsMap {
+							tps := status.TpsMap[key]
 							blockCount := tps.BlockCount
 							if blockCount <= status.TotalBlockCount {
 								start := status.TotalBlockCount - blockCount
 								end := status.TotalBlockCount
 								flushBlocks := status.Blocks[start:end]
-								FlushSingleTps(tps, flushBlocks)
+								FlushSingleTps(&tps, flushBlocks)
+								status.TpsMap[key] = tps
 							}
 						}
 					}
@@ -133,7 +146,7 @@ func FlushTpsStatus(url string, status *JtTpsStatus) bool {
 	return true
 }
 
-func FlushSingleTps(tps JtTps, blocks []JtBlock) error {
+func FlushSingleTps(tps *JtTps, blocks []JtBlock) error {
 	if tps.BlockCount != len(blocks) {
 		return errors.New("The count of blocks doesn't match!  The correct count should be " + strconv.Itoa(tps.BlockCount))
 	}

@@ -85,7 +85,7 @@ func FlushNode(node *JtNode) {
 		node.LatestBlock = *block
 	}
 
-	fmt.Println(node)
+	//fmt.Printf("===node: %+v\n", node)
 }
 
 func FlushNetwork(network *JtNetwork) {
@@ -112,7 +112,7 @@ func FlushNetwork(network *JtNetwork) {
 	}
 	network.OnlineRate = float32(network.OnlineNodeCount) / float32(network.NodeCount) * 100
 	network.ConsensusRate = float32(network.ConsensusNodeCount) / float32(network.NodeCount) * 100
-	fmt.Println(network)
+	fmt.Printf("===network: %+v\n", network)
 }
 
 func LoadJtNetworkConfig(path string) JtNetwork {

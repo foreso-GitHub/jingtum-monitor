@@ -2,9 +2,9 @@
 home="/jt/monitor"
 # path_install="/opt"
 path_system="/lib/systemd/system"
-file_name_jt_monitor="jt_monitor-0.0.6.linux-amd64"
+file_name_jt_monitor="jt_monitor-0.0.7.linux-amd64"
 file_name_jt_monitor_service="jt_monitor.service"
-url_jt_monitor="https://www.yiyuen.com/e/file/download?code=4505cefb324509fe&id=27967"
+url_jt_monitor="https://www.yiyuen.com/e/file/download?code=aabb21b0b991be34&id=28050"
 
 
 #install jt_monitor

@@ -77,7 +77,7 @@ func GenerateRequest(method string, params string) string {
 
 	request += "]}"
 
-	fmt.Println(request)
+	fmt.Printf("===request: %+v\n", request)
 	return request
 }
 

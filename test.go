@@ -56,5 +56,6 @@ func testTps(url string) {
 
 	flushOK := exporter.FlushTpsStatus(url, tpsStatus)
 	fmt.Printf("flushOK: %+v\n", flushOK)
+	fmt.Printf("TpsMap: %+v\n", tpsStatus.TpsMap)
 	fmt.Printf("===CurrentBlockNumber: %+v\n", tpsStatus.CurrentBlockNumber)
 }
