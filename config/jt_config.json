@@ -1,10 +1,11 @@
 {
-  "name":"Jingtum Network @ box-admin.elerp.net",
+  "name":"Jingtum Network @ clouds",
   "nodes": [
-    {"name":"Node_1","ip":"box-admin.elerp.net","port":"10201"},
-    {"name":"Node_2","ip":"box-admin.elerp.net","port":"10202"},
-    {"name":"Node_3","ip":"box-admin.elerp.net","port":"10203"},
-    {"name":"Node_4","ip":"box-admin.elerp.net","port":"10204"},
-    {"name":"Node_5","ip":"box-admin.elerp.net","port":"10205"}
+    {"name":"jt-node-al","ip":"121.89.209.19","port":"9545"},
+    {"name":"jt-node-bd","ip":"180.76.125.22","port":"9545"},
+    {"name":"jt-node-tx","ip":"45.40.240.50","port":"9545"},
+    {"name":"jt-node-hw","ip":"121.37.216.100","port":"9545"},
+    {"name":"jt-node-ty","ip":"61.171.12.71","port":"9545"}
   ]
 }
+

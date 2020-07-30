@@ -3,7 +3,7 @@ package exporter
 import (
 	"errors"
 	"fmt"
-	"math/rand"
+	//"math/rand"
 	"strconv"
 )
 
@@ -94,9 +94,9 @@ func FlushTpsStatus(url string, status *JtTpsStatus) bool {
 		if newblockNumber > lastBlockNumber {
 			for blockNumber := lastBlockNumber + 1; blockNumber <= newblockNumber; blockNumber++ {
 				if block, err := GetBlockByNumber(url, blockNumber); err == nil {
-					//txCount := len(block.Transactions)
-					txCount := rand.Intn(100)         //todo: fake tx count, need be deleted later.
-					block.Parent_close_time = txCount //todo: use Parent_close_time to transfer fake tx count, need be deleted later.
+					txCount := len(block.Transactions)
+					//txCount := rand.Intn(100)         //todo: fake tx count, need be deleted later.
+					//block.Parent_close_time = txCount //todo: use Parent_close_time to transfer fake tx count, need be deleted later.
 					fmt.Printf("blockNumber: %+v\n", blockNumber)
 					fmt.Printf("tx count: %+v\n", txCount)
 
@@ -141,7 +141,7 @@ func FlushSingleTps(tps JtTps, blocks []JtBlock) error {
 	for i := 0; i < tps.BlockCount; i++ {
 		//tps.Blocks = append(tps.Blocks, blocks[i])
 		tps.TxCount += len(blocks[i].Transactions)
-		tps.TxCount += blocks[i].Parent_close_time
+		//tps.TxCount += blocks[i].Parent_close_time
 	}
 	tps.Tps = float64(tps.TxCount) / float64(tps.Period)
 	fmt.Printf("===flush tps: %+v\n", tps)

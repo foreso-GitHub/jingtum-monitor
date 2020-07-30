@@ -77,6 +77,7 @@ func FlushNode(node *JtNode) {
 		node.Online = false
 	} else {
 		node.Online = true
+		node.BlockNumber = blockNumber
 	}
 
 	if block, err := GetBlockByNumber(url, blockNumber); err == nil {
