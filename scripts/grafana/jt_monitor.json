@@ -31,7 +31,7 @@
         "displayMode": "lcd",
         "fieldOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "defaults": {
             "mappings": [],
@@ -59,18 +59,21 @@
       "targets": [
         {
           "expr": "jt_total_node_count",
+          "instant": false,
           "interval": "",
           "legendFormat": "Total Node",
           "refId": "A"
         },
         {
           "expr": "jt_online_node_count",
+          "instant": false,
           "interval": "",
           "legendFormat": "Online Node",
           "refId": "B"
         },
         {
           "expr": "jt_consensus_node_count",
+          "instant": false,
           "interval": "",
           "legendFormat": "Consensus Node",
           "refId": "C"
@@ -95,7 +98,7 @@
         "colorMode": "value",
         "fieldOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "defaults": {
             "mappings": [],
@@ -124,12 +127,14 @@
       "targets": [
         {
           "expr": "jt_block_number",
+          "instant": true,
           "interval": "",
           "legendFormat": "Block Height",
           "refId": "A"
         },
         {
           "expr": "jt_current_block_tx_count",
+          "instant": true,
           "interval": "",
           "legendFormat": "Transaction Count",
           "refId": "B"
@@ -155,7 +160,7 @@
         "colorMode": "value",
         "fieldOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "defaults": {
             "mappings": [],
@@ -184,36 +189,43 @@
       "targets": [
         {
           "expr": "jt_average_tps",
+          "hide": false,
+          "instant": false,
           "interval": "",
           "legendFormat": "Total Average Tps",
           "refId": "B"
         },
         {
           "expr": "jt_current_block_tps",
+          "instant": false,
           "interval": "",
           "legendFormat": "Current Block Tps",
           "refId": "A"
         },
         {
           "expr": "jt_current_minute_tps",
+          "instant": false,
           "interval": "",
           "legendFormat": "Last Minute Tps",
           "refId": "C"
         },
         {
           "expr": "jt_current_hour_tps",
+          "instant": false,
           "interval": "",
           "legendFormat": "Last Hour Tps",
           "refId": "D"
         },
         {
           "expr": "jt_current_day_tps",
+          "instant": false,
           "interval": "",
           "legendFormat": "Last Day Tps",
           "refId": "E"
         },
         {
           "expr": "jt_current_week_tps",
+          "instant": false,
           "interval": "",
           "legendFormat": "Last Week Tps",
           "refId": "F"
@@ -256,5 +268,5 @@
   "variables": {
     "list": []
   },
-  "version": 11
+  "version": 14
 }

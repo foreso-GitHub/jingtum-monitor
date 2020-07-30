@@ -14,15 +14,15 @@ func test() {
 	config := common.LoadConfig("./config/config.json")
 
 	//region test
-	testRun(config)
-	time.Sleep(6000000000)
-	testRun(config)
-	time.Sleep(61000000000)
-	testRun(config)
+	for i := 0; i < 100; i++ {
+		testRunTps(config)
+		time.Sleep(6000000000)
+	}
+
 	//endregion
 }
 
-func testRun(config common.ExporterConfig) {
+func testRunTps(config common.ExporterConfig) {
 	//url := "http://" + "box-admin.elerp.net" + ":" + "10201" + "/v1/jsonrpc" //请求地址
 	//url := "http://" + "180.76.125.22" + ":" + "9545" + "/v1/jsonrpc" //请求地址
 	//testLibrary(url)
@@ -56,6 +56,6 @@ func testTps(url string) {
 
 	flushOK := exporter.FlushTpsStatus(url, tpsStatus)
 	fmt.Printf("flushOK: %+v\n", flushOK)
-	fmt.Printf("TpsMap: %+v\n", tpsStatus.TpsMap)
-	fmt.Printf("===CurrentBlockNumber: %+v\n", tpsStatus.CurrentBlockNumber)
+	//fmt.Printf("TpsMap: %+v\n", tpsStatus.TpsMap)
+	//fmt.Printf("===CurrentBlockNumber: %+v\n", tpsStatus.CurrentBlockNumber)
 }

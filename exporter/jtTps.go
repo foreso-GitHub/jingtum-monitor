@@ -82,12 +82,6 @@ func FlushTpsStatus(url string, status *JtTpsStatus) bool {
 	} else {
 		lastBlockNumber := status.CurrentBlockNumber
 
-		//todo: for test only
-		//gap := 3
-		//if newblockNumber > gap {
-		//	lastBlockNumber = newblockNumber - gap
-		//}
-
 		fmt.Printf("lastBlockNumber: %+v\n", lastBlockNumber)
 		fmt.Printf("newblockNumber: %+v\n", newblockNumber)
 
@@ -95,8 +89,6 @@ func FlushTpsStatus(url string, status *JtTpsStatus) bool {
 			for blockNumber := lastBlockNumber + 1; blockNumber <= newblockNumber; blockNumber++ {
 				if block, err := GetBlockByNumber(url, blockNumber); err == nil {
 					txCount := len(block.Transactions)
-					//txCount := rand.Intn(100)         //todo: fake tx count, need be deleted later.
-					//block.Parent_close_time = txCount //todo: use Parent_close_time to transfer fake tx count, need be deleted later.
 					fmt.Printf("blockNumber: %+v\n", blockNumber)
 					fmt.Printf("tx count: %+v\n", txCount)
 
@@ -112,17 +104,6 @@ func FlushTpsStatus(url string, status *JtTpsStatus) bool {
 
 					//reflush tps list, only flush on last block
 					if blockNumber == newblockNumber {
-						//for _, tps := range status.TpsMap {
-						//	blockCount := tps.BlockCount
-						//	if blockCount <= status.TotalBlockCount {
-						//		start := status.TotalBlockCount - blockCount
-						//		end := status.TotalBlockCount
-						//		flushBlocks := status.Blocks[start:end]
-						//		FlushSingleTps(&tps, flushBlocks)
-						//		status.TpsMap[blockCount] = tps
-						//	}
-						//}
-
 						for key, _ := range status.TpsMap {
 							tps := status.TpsMap[key]
 							blockCount := tps.BlockCount
@@ -151,11 +132,11 @@ func FlushSingleTps(tps *JtTps, blocks []JtBlock) error {
 		return errors.New("The count of blocks doesn't match!  The correct count should be " + strconv.Itoa(tps.BlockCount))
 	}
 	tps.Blocks = make([]JtBlock, 0)
+	txCount := 0
 	for i := 0; i < tps.BlockCount; i++ {
-		//tps.Blocks = append(tps.Blocks, blocks[i])
-		tps.TxCount += len(blocks[i].Transactions)
-		//tps.TxCount += blocks[i].Parent_close_time
+		txCount += len(blocks[i].Transactions)
 	}
+	tps.TxCount = txCount
 	tps.Tps = float64(tps.TxCount) / float64(tps.Period)
 	fmt.Printf("===flush tps: %+v\n", tps)
 	return nil
