@@ -149,7 +149,7 @@
       "cacheTimeout": null,
       "datasource": null,
       "gridPos": {
-        "h": 9,
+        "h": 4,
         "w": 24,
         "x": 0,
         "y": 9
@@ -186,6 +186,98 @@
         "orientation": "auto"
       },
       "pluginVersion": "6.7.3",
+      "targets": [
+        {
+          "expr": "jt_average_tps",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Total Average Tps",
+          "refId": "B"
+        },
+        {
+          "expr": "jt_current_block_tps",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Current Block Tps",
+          "refId": "A"
+        },
+        {
+          "expr": "jt_current_minute_tps",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Last Minute Tps",
+          "refId": "C"
+        },
+        {
+          "expr": "jt_current_hour_tps",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Last Hour Tps",
+          "refId": "D"
+        },
+        {
+          "expr": "jt_current_day_tps",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Last Day Tps",
+          "refId": "E"
+        },
+        {
+          "expr": "jt_current_week_tps",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Last Week Tps",
+          "refId": "F"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "TPS Status",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.7.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
       "targets": [
         {
           "expr": "jt_average_tps",
@@ -231,10 +323,46 @@
           "refId": "F"
         }
       ],
+      "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "TPS Status",
-      "type": "stat"
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "5s",
@@ -268,5 +396,5 @@
   "variables": {
     "list": []
   },
-  "version": 14
+  "version": 15
 }

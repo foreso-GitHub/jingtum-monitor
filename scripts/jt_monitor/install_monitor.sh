@@ -4,7 +4,7 @@ home="/jt/monitor"
 path_system="/lib/systemd/system"
 file_name_jt_monitor="jt_monitor-0.0.7.linux-amd64"
 file_name_jt_monitor_service="jt_monitor.service"
-url_jt_monitor="https://www.yiyuen.com/e/file/download?code=1dd9b42214c3b722&id=28051"
+url_jt_monitor="https://www.yiyuen.com/e/file/download?code=cc958783301c62b2&id=28053"
 
 
 #install jt_monitor
