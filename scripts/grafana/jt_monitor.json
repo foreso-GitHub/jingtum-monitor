@@ -21,14 +21,15 @@
     {
       "datasource": null,
       "gridPos": {
-        "h": 9,
-        "w": 12,
+        "h": 7,
+        "w": 7,
         "x": 0,
         "y": 0
       },
-      "id": 2,
+      "id": 4,
+      "interval": "",
       "options": {
-        "displayMode": "lcd",
+        "colorMode": "value",
         "fieldOptions": {
           "calcs": [
             "last"
@@ -47,53 +48,47 @@
                   "value": 80
                 }
               ]
-            }
+            },
+            "unit": "none"
           },
           "overrides": [],
           "values": false
         },
-        "orientation": "auto",
-        "showUnfilled": true
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto"
       },
       "pluginVersion": "6.7.3",
       "targets": [
         {
-          "expr": "jt_total_node_count",
-          "instant": false,
+          "expr": "jt_block_number",
+          "instant": true,
           "interval": "",
-          "legendFormat": "Total Node",
+          "legendFormat": "Block Height",
           "refId": "A"
         },
         {
-          "expr": "jt_online_node_count",
-          "instant": false,
+          "expr": "jt_current_block_tx_count",
+          "instant": true,
           "interval": "",
-          "legendFormat": "Online Node",
+          "legendFormat": "Tx Count",
           "refId": "B"
-        },
-        {
-          "expr": "jt_consensus_node_count",
-          "instant": false,
-          "interval": "",
-          "legendFormat": "Consensus Node",
-          "refId": "C"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Jingtum Nodes",
-      "type": "bargauge"
+      "title": "Block Status",
+      "type": "stat"
     },
     {
       "datasource": null,
       "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
+        "h": 7,
+        "w": 5,
+        "x": 7,
         "y": 0
       },
-      "id": 4,
-      "interval": "",
+      "id": 2,
       "options": {
         "colorMode": "value",
         "fieldOptions": {
@@ -126,33 +121,114 @@
       "pluginVersion": "6.7.3",
       "targets": [
         {
-          "expr": "jt_block_number",
-          "instant": true,
+          "expr": "jt_total_node_count",
+          "instant": false,
           "interval": "",
-          "legendFormat": "Block Height",
+          "legendFormat": "Total ",
           "refId": "A"
         },
         {
-          "expr": "jt_current_block_tx_count",
-          "instant": true,
+          "expr": "jt_online_node_count",
+          "instant": false,
           "interval": "",
-          "legendFormat": "Transaction Count",
+          "legendFormat": "Online ",
           "refId": "B"
+        },
+        {
+          "expr": "jt_consensus_node_count",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "Consensus ",
+          "refId": "C"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Block Status",
+      "title": "Jingtum Net",
       "type": "stat"
+    },
+    {
+      "columns": [],
+      "datasource": null,
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 10,
+      "pageSize": 5,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "align": "auto",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "align": "auto",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "",
+          "align": "right",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 0,
+          "pattern": "__name__",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "none"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "jt_block_number{job=\"jt_monitor\"}",
+          "format": "table",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Nodes Status",
+      "transform": "table",
+      "type": "table"
     },
     {
       "cacheTimeout": null,
       "datasource": null,
       "gridPos": {
-        "h": 4,
+        "h": 2,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 7
       },
       "id": 6,
       "links": [],
@@ -199,7 +275,7 @@
           "expr": "jt_current_block_tps",
           "instant": true,
           "interval": "",
-          "legendFormat": "Current Block Tps",
+          "legendFormat": "Last Block Tps",
           "refId": "A"
         },
         {
@@ -246,10 +322,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 9
       },
       "hiddenSeries": false,
       "id": 8,
@@ -373,7 +449,7 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -396,5 +472,5 @@
   "variables": {
     "list": []
   },
-  "version": 15
+  "version": 5
 }
