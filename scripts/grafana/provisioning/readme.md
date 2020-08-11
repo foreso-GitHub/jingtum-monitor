@@ -1,8 +1,11 @@
-参考文档
+# 目的
+grafana的provisioning功能可以帮助我们预先设置jt监控模块的数据来源和看板。这样安装之前先修改相应的设置文件，安装之后，用户无需设置，就能直接运行模块。
+
+# 参考文档
 https://grafana.com/docs/grafana/latest/administration/provisioning/
 https://www.codercto.com/a/41896.html
 
-步骤
+# 步骤
 #1. grafana配置文件
 
 grafana provisioning (http://docs.grafana.org/administration/provisioning/#provisioning-grafana)是grafana 5.0后引入的功能，用以支持通过配置的方式进行datasource和dashboard的配置。
