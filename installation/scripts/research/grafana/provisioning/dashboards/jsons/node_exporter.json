@@ -2,6 +2,7 @@
   "annotations": {
     "list": [
       {
+        "$$hashKey": "object:27",
         "builtIn": 1,
         "datasource": "-- Grafana --",
         "enable": true,
@@ -16,8 +17,7 @@
   "editable": true,
   "gnetId": 8919,
   "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1596705571223,
+  "iteration": 1597136502958,
   "links": [
     {
       "icon": "external link",
@@ -3626,7 +3626,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -3655,7 +3655,9 @@
         "allValue": null,
         "current": {
           "text": "180.76.125.22:9100",
-          "value": "180.76.125.22:9100"
+          "value": [
+            "180.76.125.22:9100"
+          ]
         },
         "datasource": "Prometheus",
         "definition": "label_values(node_uname_info{job=~\"$job\",nodename=~\"$hostname\"},instance)",
@@ -3711,6 +3713,7 @@
       {
         "allValue": null,
         "current": {
+          "selected": true,
           "text": "/",
           "value": "/"
         },
@@ -3737,6 +3740,7 @@
       {
         "allValue": null,
         "current": {
+          "selected": true,
           "text": "jt-node-bd",
           "value": "jt-node-bd"
         },
@@ -3795,5 +3799,5 @@
   "variables": {
     "list": []
   },
-  "version": 4
+  "version": 1
 }
