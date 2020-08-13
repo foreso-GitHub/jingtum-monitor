@@ -1,4 +1,10 @@
 #!/bin/bash
+#check if current path is the path of sh
+if [ ! -x install.sh ]; then
+  echo -e "\033[41;36m Error: have to execute install.sh in its own path! \033[0m"
+  exit 1
+fi
+
 home="/jt/monitor"
 path_install=$home"/install/jt_supervisory"
 
@@ -8,8 +14,6 @@ sed -i 's/\r//' install_all.sh
 #create install path and cp installations
 rm $path_install -fr
 mkdir -p $path_install
-
-#todo if current path is the path of sh
 cp ./ $path_install -fr
 cd $path_install
 pwd

@@ -1,4 +1,10 @@
 #!/bin/bash
+#check if current path is the path of sh
+if [ ! -x install.sh ]; then
+  echo -e "\033[41;36m Error: have to execute install.sh in its own path! \033[0m"
+  exit 1
+fi
+
 home="/jt/monitor"
 path_install=$home"/install/node_exporter"
 
