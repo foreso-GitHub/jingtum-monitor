@@ -5,6 +5,7 @@ path_system="/lib/systemd/system"
 name_node_exporter="node_exporter-0.18.1.linux-amd64"
 path_node_exporter=$home/$name_node_exporter
 file_name_node_exporter_service="node_exporter.service"
+file_node_exporter_sh=$path_node_exporter"/start.sh"
 
 #install node_exporter
 cd $home
@@ -18,7 +19,6 @@ sudo tar -zxvf $path_install/$name_node_exporter.tar.gz -C $home
 cd $path_node_exporter
 
 #create start script
-file_node_exporter_sh=$path_node_exporter/start.sh
 echo './node_exporter' >$file_node_exporter_sh
 chmod u+x $file_node_exporter_sh
 
