@@ -9,7 +9,7 @@ home="/jt/monitor"
 path_install=$home"/install/node_exporter"
 
 #format in linux
-sed -i 's/\r//' install_node.sh
+sed -i 's/\r//' *.sh
 
 #create install path and cp installations
 rm $path_install -fr
