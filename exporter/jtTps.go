@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-const BLOCK_PERIOD = 5
+const BLOCK_PERIOD = 5 // system generate 1 block per 5 seconds
 
 //region tps struct
 
@@ -117,6 +117,7 @@ func FlushTpsStatus(url string, status *JtTpsStatus) bool {
 						}
 					}
 				} else {
+					fmt.Printf("GetBlockByNumber error: %+v\n", err)
 					return false
 				}
 			}
@@ -131,13 +132,14 @@ func FlushSingleTps(tps *JtTps, blocks []JtBlock) error {
 	if tps.BlockCount != len(blocks) {
 		return errors.New("The count of blocks doesn't match!  The correct count should be " + strconv.Itoa(tps.BlockCount))
 	}
-	tps.Blocks = make([]JtBlock, 0)
+	tps.Blocks = blocks
 	txCount := 0
 	for i := 0; i < tps.BlockCount; i++ {
 		txCount += len(blocks[i].Transactions)
 	}
 	tps.TxCount = txCount
 	tps.Tps = float64(tps.TxCount) / float64(tps.Period)
+	//fmt.Printf("===TxCount: %+v\n", tps.TxCount)
 	fmt.Printf("===flush tps: %+v\n", tps)
 	return nil
 }
