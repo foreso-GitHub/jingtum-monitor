@@ -7,8 +7,10 @@ import (
 )
 
 type ExporterConfig struct {
-	JtConfigPath  string `json:"jtConfigPath"`
-	ExportAddress string `json:"exportAddress"`
+	JtConfigPath   string `json:"jtConfigPath"`
+	ExportAddress  string `json:"exportAddress"`
+	SupervisorMode int    `json:"supervisorMode"`
+	RequestTimeout int    `json:"requestTimeout"`
 }
 
 func LoadConfig(path string) ExporterConfig {

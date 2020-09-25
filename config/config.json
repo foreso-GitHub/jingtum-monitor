@@ -1,4 +1,7 @@
 {
   "exportAddress": ":9101",
-  "jtConfigPath":"./config/jt_config.json"
+  "jtConfigPath":"./config/jt_config.json",
+  "supervisorMode": 1,
+  "requestTimeout": 6000
 }
+
