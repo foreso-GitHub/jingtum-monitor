@@ -75,7 +75,7 @@ func AddJtTps(name string, blockCount int, status *JtTpsStatus) {
 //region flush
 
 func FlushTpsStatus(status *JtTpsStatus) bool {
-	url, newblockNumber, err := GetBlockNumberByRandNode()
+	_, newblockNumber, err := GetBlockNumberByRandNode()
 	if err != nil {
 		return false
 	} else {
@@ -84,7 +84,7 @@ func FlushTpsStatus(status *JtTpsStatus) bool {
 
 		if newblockNumber > lastBlockNumber {
 			for blockNumber := lastBlockNumber + 1; blockNumber <= newblockNumber; blockNumber++ {
-				if block, err := GetBlockByNumber(url, blockNumber); err == nil {
+				if _, block, err := GetBlockByNumberByRandNode(blockNumber); err == nil {
 					txCount := len(block.Transactions)
 					log.Println("blockNumber: ", blockNumber, " | tx count: ", txCount)
 
@@ -128,7 +128,7 @@ func FlushSingleTps(tps *JtTps, blocks []JtBlock) error {
 	if tps.BlockCount != len(blocks) {
 		return errors.New("The count of blocks doesn't match!  The correct count should be " + strconv.Itoa(tps.BlockCount))
 	}
-	tps.Blocks = blocks
+	//tps.Blocks = blocks  //todo need restore later, now remove just for debug
 	txCount := 0
 	for i := 0; i < tps.BlockCount; i++ {
 		txCount += len(blocks[i].Transactions)

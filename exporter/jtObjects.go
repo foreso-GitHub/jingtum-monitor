@@ -80,7 +80,7 @@ func FlushNode(node *JtNode) {
 		node.BlockNumber = blockNumber
 	}
 
-	if block, err := GetBlockByNumber(url, blockNumber); err == nil {
+	if _, block, err := GetBlockByNumberByRandNode(blockNumber); err == nil {
 		node.LatestBlock = *block
 	}
 

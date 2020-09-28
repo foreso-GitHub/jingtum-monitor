@@ -46,7 +46,7 @@ func testLibrary(url string) {
 	blockNumber, err := exporter.GetBlockNumberByNode(url)
 	fmt.Printf("blockNumber: %v\n", blockNumber)
 	fmt.Printf("blockNumber err: %v\n", err)
-	block, err := exporter.GetBlockByNumber(url, blockNumber)
+	_, block, err := exporter.GetBlockByNumberByRandNode(blockNumber)
 	fmt.Printf("block: %+v\n", block)
 	fmt.Printf("block err: %v\n", err)
 }

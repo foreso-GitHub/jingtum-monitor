@@ -24,21 +24,20 @@ func GetBlockNumberByNode(url string) (int, error) {
 	return blockNumber.(int), err
 }
 
-func GetBlockNumber(args ...interface{}) (interface{}, error) {
+func GetBlockNumber(url string, args ...interface{}) (interface{}, error) {
 	params := GenerateRequest("jt_blockNumber", "")
-	url := args[0].(string)
 	jsonString, err := Post(url, CONTENT_TYPE, params)
 	if err != nil {
-		log.Println("[jt_blockNumber] error: ", url, " | ", err)
+		log.Println("[jt_blockNumber] error: ", err)
 		return GetJtErrorCode(err.Error()), err
+	}
+
+	var blockNumberJson BlockNumberJson
+	if err := json.Unmarshal(jsonString, &blockNumberJson); err == nil {
+		return blockNumberJson.BlockNumber, nil
 	} else {
-		var blockNumberJson BlockNumberJson
-		if err := json.Unmarshal(jsonString, &blockNumberJson); err == nil {
-			return blockNumberJson.BlockNumber, nil
-		} else {
-			log.Println("[jt_blockNumber] error: ", err, " | ", jsonString)
-			return -104, err
-		}
+		log.Println("[jt_blockNumber] error: ", err, " | ", jsonString)
+		return -104, err
 	}
 }
 
@@ -51,28 +50,27 @@ func GetBlockNumberByRandNode() (string, int, error) {
 
 //region get block by number
 
-func GetBlockByNumber(url string, blockNumber int) (*JtBlock, error) {
+func GetBlockByNumber(url string, args ...interface{}) (interface{}, error) {
+	blockNumber := (args[0].([]interface{}))[0].(int)
 	params := GenerateRequest("jt_getBlockByNumber", "\""+strconv.Itoa(blockNumber)+"\",false")
 	jsonString, err := Post(url, CONTENT_TYPE, params)
-
 	if err != nil {
 		log.Println("[jt_getBlockByNumber] error: ", err)
-		log.Println(err)
-		return nil, err
-	} else if string(jsonString[:]) == "Bad Request\n" {
-		log.Println("[jt_getBlockByNumber] error: "+url+" | ", "Bad Request")
-		log.Println("Bad Request")
-		return nil, err
+		return GetJtErrorCode(err.Error()), err
 	}
+
 	var blockJson BlockJson
 	if err := json.Unmarshal(jsonString, &blockJson); err == nil {
-		//log.Println("================json str 转BlockNumberJson==")
-		//log.Println(blockNumberJson)
-		//log.Println(blockNumberJson.BlockNumber)
 		return &blockJson.Block, nil
 	} else {
-		return nil, errors.New("Unmarshal error")
+		log.Println("[jt_getBlockByNumber] error: ", err, " | ", jsonString)
+		return -104, err
 	}
+}
+
+func GetBlockByNumberByRandNode(blockNumber int) (string, *JtBlock, error) {
+	url, block, err := getJtInfo(GetBlockByNumber, blockNumber, blockNumber)
+	return url, block.(*JtBlock), err
 }
 
 //endregion
@@ -98,7 +96,7 @@ func getJtInfoByNodes(nodes []JtNode, retryLimit int, retriedCount int, jtFuncti
 		url = connectedUrl
 	}
 	//log.Println("Url: %v\n", url)
-	info, err := jtFunction.(func(...interface{}) (interface{}, error))(url, jtFunctionArgs)
+	info, err := jtFunction.(func(string, ...interface{}) (interface{}, error))(url, jtFunctionArgs...)
 	if err == nil || retriedCount == retryLimit {
 		return url, info, err
 	} else {
