@@ -44,7 +44,8 @@ func CreateJtTpsStatus(initBlockNumber int) *JtTpsStatus {
 	status.TotalTxCount = 0
 	status.TotalTps = 0
 	status.TpsMap = make(map[int]JtTps)
-	AddJtTps("最新区块TPS", 1, status)
+	AddJtTps("最新单个区块TPS", 1, status)
+	AddJtTps("最新三个区块TPS", 3, status)
 	AddJtTps("最近一分钟TPS", 1*12, status)
 	AddJtTps("最近一小时TPS", 1*12*60, status)
 	AddJtTps("最近一天TPS", 1*12*60*24, status)

@@ -97,12 +97,12 @@ func getJtInfoByNodes(nodes []JtNode, retryLimit int, retriedCount int, jtFuncti
 	}
 	//log.Println("Url: %v\n", url)
 	info, err := jtFunction.(func(string, ...interface{}) (interface{}, error))(url, jtFunctionArgs...)
-	if err == nil || retriedCount == retryLimit {
+	if err == nil || retriedCount == retryLimit || GetJtErrorCode(err.Error()) != -102 {
 		return url, info, err
 	} else {
-		log.Println("retry: ", retriedCount)
 		time.Sleep(time.Duration(config.RequestRetrySpan) * time.Millisecond)
 		retriedCount++
+		log.Println("Request retry count: ", retriedCount)
 		connectedUrl = "" //reset connected url
 		return getJtInfoByNodes(nodes, retryLimit, retriedCount, jtFunction, jtFunctionArgs)
 	}
