@@ -1,7 +1,6 @@
 package exporter
 
 import (
-	"fmt"
 	"github.com/foreso-GitHub/jingtum-monitor/common"
 	"github.com/prometheus/client_golang/prometheus"
 	"sync"
@@ -117,17 +116,14 @@ func (n *JtCollector) Collect(ch chan<- prometheus.Metric) {
 	FlushNetwork(&network)
 
 	//flush tps
-	nodes := network.NodeList
-	url := GetRandUrl(nodes)
-	fmt.Printf("FlushTpsStatus @ Url: %v\n", url)
-
 	if firstCollect {
-		blockNumber, _ := GetBlockNumber(url)
+		_, blockNumber, _ := GetBlockNumberByRandNode()
 		tpsStatus = CreateJtTpsStatus(blockNumber)
 		firstCollect = false
 	}
-	flushOK := FlushTpsStatus(url, tpsStatus)
-	fmt.Printf("flushOK: %+v\n", flushOK)
+	_ = FlushTpsStatus(tpsStatus)
+	//flushOK := FlushTpsStatus(tpsStatus)
+	//log.Println("flushOK: %+v\n", flushOK)
 
 	n.guard.Lock()
 	ch <- prometheus.MustNewConstMetric(n.nodeCountDesc, prometheus.GaugeValue, float64(network.NodeCount))

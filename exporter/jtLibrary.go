@@ -14,44 +14,53 @@ import (
 	"time"
 )
 
-var m_ID = 1
-
+//region jt library
 const CONTENT_TYPE = "application/json"
 
-//region jt library
+//region get block number
 
-func GetBlockNumber(url string) (int, error) {
+func GetBlockNumberByNode(url string) (int, error) {
+	blockNumber, err := GetBlockNumber(url)
+	return blockNumber.(int), err
+}
+
+func GetBlockNumber(args ...interface{}) (interface{}, error) {
 	params := GenerateRequest("jt_blockNumber", "")
+	url := args[0].(string)
 	jsonString, err := Post(url, CONTENT_TYPE, params)
 	if err != nil {
-		log.Println("[jt_blockNumber] error: ", err)
-		return -1, err
-	} else if string(jsonString[:]) == "Bad Request\n" {
-		log.Println("[jt_blockNumber] error: "+url+" | ", "Bad Request")
-		return -2, errors.New("Bad Request")
+		log.Println("[jt_blockNumber] error: ", url, " | ", err)
+		return GetJtErrorCode(err.Error()), err
 	} else {
 		var blockNumberJson BlockNumberJson
 		if err := json.Unmarshal(jsonString, &blockNumberJson); err == nil {
-			//log.Println("================json str 转BlockNumberJson==")
-			//log.Println("blockNumberJson: ", blockNumberJson)
-			//log.Println(blockNumberJson.BlockNumber)
 			return blockNumberJson.BlockNumber, nil
 		} else {
-			return -3, errors.New("Unmarshal error")
+			log.Println("[jt_blockNumber] error: ", err, " | ", jsonString)
+			return -104, err
 		}
 	}
 }
+
+func GetBlockNumberByRandNode() (string, int, error) {
+	url, blockNumber, err := getJtInfo(GetBlockNumber)
+	return url, blockNumber.(int), err
+}
+
+//endregion
+
+//region get block by number
 
 func GetBlockByNumber(url string, blockNumber int) (*JtBlock, error) {
 	params := GenerateRequest("jt_getBlockByNumber", "\""+strconv.Itoa(blockNumber)+"\",false")
 	jsonString, err := Post(url, CONTENT_TYPE, params)
 
 	if err != nil {
-		log.Println("================[jt_getBlockByNumber] error==", url)
+		log.Println("[jt_getBlockByNumber] error: ", err)
 		log.Println(err)
 		return nil, err
 	} else if string(jsonString[:]) == "Bad Request\n" {
-		log.Println("================[jt_getBlockByNumber] error==", url)
+		log.Println("[jt_getBlockByNumber] error: "+url+" | ", "Bad Request")
 		log.Println("Bad Request")
 		return nil, err
 	}
@@ -66,6 +75,57 @@ func GetBlockByNumber(url string, blockNumber int) (*JtBlock, error) {
 	}
 }
 
+//endregion
+
+//endregion
+
+//region common
+
+func getJtInfo(jtFunction interface{}, jtFunctionArgs ...interface{}) (string, interface{}, error) {
+	network := LoadJtNetworkConfig(config.JtConfigPath)
+	nodes := network.NodeList
+	return getJtInfoByNodes(nodes, config.RequestRetryLimit, 0, jtFunction, jtFunctionArgs)
+}
+
+var connectedUrl = ""
+
+func getJtInfoByNodes(nodes []JtNode, retryLimit int, retriedCount int, jtFunction interface{}, jtFunctionArgs ...interface{}) (string, interface{}, error) {
+	var url = ""
+	if connectedUrl == "" {
+		url = GetRandUrl(nodes)
+		connectedUrl = url
+	} else {
+		url = connectedUrl
+	}
+	//log.Println("Url: %v\n", url)
+	info, err := jtFunction.(func(...interface{}) (interface{}, error))(url, jtFunctionArgs)
+	if err == nil || retriedCount == retryLimit {
+		return url, info, err
+	} else {
+		log.Println("retry: ", retriedCount)
+		time.Sleep(time.Duration(config.RequestRetrySpan) * time.Millisecond)
+		retriedCount++
+		connectedUrl = "" //reset connected url
+		return getJtInfoByNodes(nodes, retryLimit, retriedCount, jtFunction, jtFunctionArgs)
+	}
+}
+
+func GetJtErrorCode(errString string) int {
+	if errString != "" {
+		if strings.Index(errString, "net/http: request canceled while waiting for connection") != -1 {
+			return -102 //request timeout
+		} else if errString == "Bad Request\n" {
+			return -103 //bad request
+		} else {
+			return -101 //common request error
+		}
+	}
+	return 0
+}
+
+//region request
+var m_ID = 1
+
 func GenerateRequest(method string, params string) string {
 	request := "{\"jsonrpc\":\"2.0\",\"id\":"
 	request += strconv.Itoa(m_ID)
@@ -79,31 +139,39 @@ func GenerateRequest(method string, params string) string {
 
 	request += "]}"
 
-	//fmt.Printf("===request: %+v\n", request)
+	//log.Println("===request: %+v\n", request)
 	return request
 }
 
 //Post method with timeout
 func Post(url string, contentType string, params string) ([]byte, error) {
 	//start := time.Now()
+	//log.Println("start is: ", start)
 	trans := &http.Transport{}
 	client := &http.Client{
 		Transport: trans,
 		Timeout:   time.Duration(config.RequestTimeout) * time.Millisecond,
 	}
-	req, err := http.NewRequest("Post", url, bytes.NewBuffer([]byte(params)))
+
+	request, err := http.NewRequest("Post", url, bytes.NewBuffer([]byte(params)))
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	response, err := client.Do(req)
+	response, err := client.Do(request)
 	if err != nil {
 		return nil, err
 	}
 
 	//log.Println("CostTime is: " + time.Since(start).String())
 	defer response.Body.Close()
-	return ioutil.ReadAll(response.Body)
+	bytes, err := ioutil.ReadAll(response.Body)
+
+	if string(bytes[:]) == "Bad Request\n" {
+		return nil, errors.New("Bad Request")
+	} else {
+		return bytes, err
+	}
 }
 
 //region deprecated post methods
@@ -136,7 +204,7 @@ func Post2(url string, contentType string, params string) ([]byte, error) {
 
 	//go func() {
 	//	//time.Sleep(time.Second * time.Duration(1))
-	//	//fmt.Printf("%v: abort\n", time.Now())
+	//	//log.Println("%v: abort\n", time.Now())
 	//	trans.CancelRequest(req)
 	//}()
 
@@ -154,6 +222,8 @@ func Post2(url string, contentType string, params string) ([]byte, error) {
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
 }
+
+//endregion
 
 //endregion
 

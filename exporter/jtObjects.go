@@ -2,7 +2,6 @@ package exporter
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/foreso-GitHub/jingtum-monitor/common"
 	"io/ioutil"
 	"log"
@@ -73,7 +72,7 @@ type BlockJson struct {
 func FlushNode(node *JtNode) {
 	url := "http://" + node.Ip + ":" + node.Port + "/v1/jsonrpc" //请求地址
 
-	blockNumber, err := GetBlockNumber(url)
+	blockNumber, err := GetBlockNumberByNode(url)
 	if err != nil {
 		node.Online = false
 	} else {
@@ -85,7 +84,7 @@ func FlushNode(node *JtNode) {
 		node.LatestBlock = *block
 	}
 
-	//fmt.Printf("===node: %+v\n", node)
+	//log.Println("===node: %+v\n", node)
 }
 
 func FlushNetwork(network *JtNetwork) {
@@ -112,7 +111,7 @@ func FlushNetwork(network *JtNetwork) {
 	}
 	network.OnlineRate = float32(network.OnlineNodeCount) / float32(network.NodeCount) * 100
 	network.ConsensusRate = float32(network.ConsensusNodeCount) / float32(network.NodeCount) * 100
-	fmt.Printf("===network: %+v\n", network)
+	log.Println("===network: %+v\n", network)
 }
 
 func LoadJtNetworkConfig(path string) JtNetwork {
@@ -146,9 +145,10 @@ func PickNode(nodes []JtNode) *JtNode {
 func GetRandUrl(nodes []JtNode) string {
 	node := PickNode(nodes)
 	url := GetUrlFromNode(node)
-	_, error := GetBlockNumber(url)
-	if error != nil {
-		return GetRandUrl(nodes)
-	}
+	//_, error := GetBlockNumber(url)
+	//if error != nil {
+	//	time.Sleep(100 * time.Millisecond)
+	//	return GetRandUrl(nodes)
+	//}
 	return url
 }

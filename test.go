@@ -9,6 +9,8 @@ import (
 
 var firstCollect = true
 var tpsStatus = exporter.CreateJtTpsStatus(-1)
+var connectedUrl = ""
+var config = common.LoadConfig("./config/config.json")
 
 func test() {
 	config := common.LoadConfig("./config/config.json")
@@ -28,17 +30,20 @@ func testRunTps(config common.ExporterConfig) {
 	//testLibrary(url)
 	//testTps(url)
 
-	network := exporter.LoadJtNetworkConfig(config.JtConfigPath)
-	nodes := network.NodeList
-	url := exporter.GetRandUrl(nodes)
+	//network := exporter.LoadJtNetworkConfig(config.JtConfigPath)
+	//nodes := network.NodeList
+	//url := exporter.GetRandUrl(nodes)
 
+	url, _, _ := exporter.GetBlockNumberByRandNode()
+	//fmt.Printf("blockNumber: %+v\n", blockNumber)
 	testTps(url)
+	//testLibrary(url)
 }
 
 func testLibrary(url string) {
 	fmt.Printf("Url: %v", url)
 
-	blockNumber, err := exporter.GetBlockNumber(url)
+	blockNumber, err := exporter.GetBlockNumberByNode(url)
 	fmt.Printf("blockNumber: %v\n", blockNumber)
 	fmt.Printf("blockNumber err: %v\n", err)
 	block, err := exporter.GetBlockByNumber(url, blockNumber)
@@ -49,13 +54,14 @@ func testLibrary(url string) {
 func testTps(url string) {
 	fmt.Printf("Url: %v\n", url)
 	if firstCollect {
-		blockNumber, _ := exporter.GetBlockNumber(url)
+		blockNumber, _ := exporter.GetBlockNumberByNode(url)
+		//fmt.Printf("blockNumber: %+v\n", blockNumber)
 		tpsStatus = exporter.CreateJtTpsStatus(blockNumber)
 		firstCollect = false
 	}
 
-	flushOK := exporter.FlushTpsStatus(url, tpsStatus)
-	fmt.Printf("flushOK: %+v\n", flushOK)
+	_ = exporter.FlushTpsStatus(tpsStatus)
+	//fmt.Printf("flushOK: %+v\n", flushOK)
 	//fmt.Printf("TpsMap: %+v\n", tpsStatus.TpsMap)
 	//fmt.Printf("===CurrentBlockNumber: %+v\n", tpsStatus.CurrentBlockNumber)
 }

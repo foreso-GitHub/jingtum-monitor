@@ -6,6 +6,7 @@
     {"name":"jt-node-tx","ip":"45.40.240.50","port":"9545"},
     {"name":"jt-node-hw","ip":"121.37.216.100","port":"9545"},
     {"name":"jt-node-ty","ip":"61.171.12.71","port":"9545"}
-  ]
+  ],
+  "localNode" : {"name":"jt-node-ty","ip":"localhost","port":"9545"}
 }
 

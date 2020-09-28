@@ -2,8 +2,7 @@ package exporter
 
 import (
 	"errors"
-	"fmt"
-	//"math/rand"
+	"log"
 	"strconv"
 )
 
@@ -50,7 +49,7 @@ func CreateJtTpsStatus(initBlockNumber int) *JtTpsStatus {
 	AddJtTps("最近一小时TPS", 1*12*60, status)
 	AddJtTps("最近一天TPS", 1*12*60*24, status)
 	AddJtTps("最近一周TPS", 1*12*60*24*7, status)
-	//fmt.Printf("status: %+v\n", status)
+	//log.Println("status: %+v\n", status)
 	return status
 }
 
@@ -62,7 +61,7 @@ func InitJtTps(name string, blockCount int) *JtTps {
 	tps.TxCount = 0
 	tps.Tps = 0
 	tps.Blocks = make([]JtBlock, 0)
-	//fmt.Printf("tps: %+v\n", tps)
+	//log.Println("tps: %+v\n", tps)
 	return tps
 }
 
@@ -75,22 +74,19 @@ func AddJtTps(name string, blockCount int, status *JtTpsStatus) {
 
 //region flush
 
-func FlushTpsStatus(url string, status *JtTpsStatus) bool {
-	newblockNumber, err := GetBlockNumber(url)
+func FlushTpsStatus(status *JtTpsStatus) bool {
+	url, newblockNumber, err := GetBlockNumberByRandNode()
 	if err != nil {
 		return false
 	} else {
 		lastBlockNumber := status.CurrentBlockNumber
-
-		fmt.Printf("lastBlockNumber: %+v\n", lastBlockNumber)
-		fmt.Printf("newblockNumber: %+v\n", newblockNumber)
+		log.Println("BlockNumber: ", lastBlockNumber, " - ", newblockNumber)
 
 		if newblockNumber > lastBlockNumber {
 			for blockNumber := lastBlockNumber + 1; blockNumber <= newblockNumber; blockNumber++ {
 				if block, err := GetBlockByNumber(url, blockNumber); err == nil {
 					txCount := len(block.Transactions)
-					fmt.Printf("blockNumber: %+v\n", blockNumber)
-					fmt.Printf("tx count: %+v\n", txCount)
+					log.Println("blockNumber: ", blockNumber, " | tx count: ", txCount)
 
 					block := *block
 					status.Blocks = append(status.Blocks, block)
@@ -117,7 +113,7 @@ func FlushTpsStatus(url string, status *JtTpsStatus) bool {
 						}
 					}
 				} else {
-					fmt.Printf("GetBlockByNumber error: %+v\n", err)
+					log.Println("GetBlockByNumber error: %+v\n", err)
 					return false
 				}
 			}
@@ -139,8 +135,7 @@ func FlushSingleTps(tps *JtTps, blocks []JtBlock) error {
 	}
 	tps.TxCount = txCount
 	tps.Tps = float64(tps.TxCount) / float64(tps.Period)
-	//fmt.Printf("===TxCount: %+v\n", tps.TxCount)
-	fmt.Printf("===flush tps: %+v\n", tps)
+	log.Println("===flush tps: ", tps)
 	return nil
 }
 
