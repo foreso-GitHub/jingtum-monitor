@@ -10,7 +10,7 @@ type ExporterConfig struct {
 	JtConfigPath      string `json:"jtConfigPath"`
 	ExportAddress     string `json:"exportAddress"`
 	SupervisorMode    int    `json:"supervisorMode"`
-	RequestTimeout    int    `json:"requestTimeout"`
+	RequestTimeout    int    `json:"requestTimeout"` //must > 2000, otherwise prometheus will not fresh in time and then freeze.
 	RequestRetrySpan  int    `json:"requestRetrySpan"`
 	RequestRetryLimit int    `json:"requestRetryLimit"`
 }

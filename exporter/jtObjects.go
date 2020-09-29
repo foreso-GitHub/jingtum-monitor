@@ -36,7 +36,7 @@ type JtNode struct {
 	Online      bool
 	Consensus   bool
 	BlockNumber int
-	LatestBlock JtBlock
+	//LatestBlock JtBlock
 }
 
 type JtNetwork struct {
@@ -79,11 +79,6 @@ func FlushNode(node *JtNode) {
 		node.Online = true
 		node.BlockNumber = blockNumber
 	}
-
-	if _, block, err := GetBlockByNumberByRandNode(blockNumber); err == nil {
-		node.LatestBlock = *block
-	}
-
 	//log.Println("===node: %+v\n", node)
 }
 
@@ -97,14 +92,15 @@ func FlushNetwork(network *JtNetwork) {
 		FlushNode(node)
 		if network.BlockNumber < node.BlockNumber {
 			network.BlockNumber = node.BlockNumber
-			network.LatestBlock = node.LatestBlock
+			_, block, _ := GetBlockByNumberByRandNode(network.BlockNumber)
+			network.LatestBlock = *block
 		}
 		if node.Online {
 			network.OnlineNodeCount++
 		}
 	}
 	for i := 0; i < network.NodeCount; i++ {
-		network.NodeList[i].Consensus = network.BlockNumber-network.NodeList[i].BlockNumber <= 2
+		network.NodeList[i].Consensus = network.NodeList[i].Online && network.BlockNumber-network.NodeList[i].BlockNumber <= 2
 		if network.NodeList[i].Consensus {
 			network.ConsensusNodeCount++
 		}

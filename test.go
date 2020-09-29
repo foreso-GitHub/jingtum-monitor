@@ -35,9 +35,9 @@ func testRunTps(config common.ExporterConfig) {
 	//url := exporter.GetRandUrl(nodes)
 
 	exporter.FlushNetwork(&network)
-	//url, _, _ := exporter.GetBlockNumberByRandNode()
+	url, _, _ := exporter.GetBlockNumberByRandNode()
 	//fmt.Printf("blockNumber: %+v\n", blockNumber)
-	//testTps(url)
+	testTps(url)
 	//testLibrary(url)
 }
 
@@ -62,6 +62,15 @@ func testTps(url string) {
 	}
 
 	_ = exporter.FlushTpsStatus(tpsStatus)
+
+	//fmt.Printf("TpsMap[1]: %+v\n", tpsStatus.TpsMap[1].Tps)
+	//fmt.Printf("TpsMap[3]: %+v\n", tpsStatus.TpsMap[3].Tps)
+	//fmt.Printf("TpsMap[1*12]: %+v\n", tpsStatus.TpsMap[1*12].Tps)
+	//fmt.Printf("TpsMap[1*12*60]: %+v\n", tpsStatus.TpsMap[1*12*60].Tps)
+	//fmt.Printf("TpsMap[1*12*60*24]: %+v\n", tpsStatus.TpsMap[1*12*60*24].Tps)
+	//fmt.Printf("TpsMap[1*12*60*24*7]: %+v\n", tpsStatus.TpsMap[1*12*60*24*7].Tps)
+	//fmt.Printf("tpsStatus.TotalTps: %+v\n", tpsStatus.TotalTps)
+
 	//fmt.Printf("flushOK: %+v\n", flushOK)
 	//fmt.Printf("TpsMap: %+v\n", tpsStatus.TpsMap)
 	//fmt.Printf("===CurrentBlockNumber: %+v\n", tpsStatus.CurrentBlockNumber)

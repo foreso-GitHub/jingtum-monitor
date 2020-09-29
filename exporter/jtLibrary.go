@@ -75,7 +75,7 @@ func GetBlockByNumber(url string, args ...interface{}) (interface{}, error) {
 }
 
 func GetBlockByNumberByRandNode(blockNumber int) (string, *JtBlock, error) {
-	url, block, err := getJtInfo(GetBlockByNumber, blockNumber, blockNumber)
+	url, block, err := getJtInfo(GetBlockByNumber, blockNumber)
 	return url, block.(*JtBlock), err
 }
 
@@ -110,7 +110,7 @@ func getJtInfoByNodes(nodes []JtNode, retryLimit int, retriedCount int, jtFuncti
 		retriedCount++
 		log.Println("Request retry count: ", retriedCount)
 		connectedUrl = "" //reset connected url
-		return getJtInfoByNodes(nodes, retryLimit, retriedCount, jtFunction, jtFunctionArgs)
+		return getJtInfoByNodes(nodes, retryLimit, retriedCount, jtFunction, jtFunctionArgs...)
 	}
 }
 

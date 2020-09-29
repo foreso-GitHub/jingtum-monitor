@@ -2,7 +2,7 @@
   "exportAddress": ":9101",
   "jtConfigPath":"./config/jt_config.json",
   "supervisorMode": 1,
-  "requestTimeout": 6000,
+  "requestTimeout": 2000,
   "requestRetrySpan": 1000,
   "requestRetryLimit": 10
 }
