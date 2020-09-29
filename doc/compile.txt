@@ -1,3 +1,45 @@
+
+------
+编译，cmd窗口
+
+cd E:\2. work\井系\3. 链景\井通新链\监控模块\codes\jingtum-monitor
+
+===
+check env
+===
+go env CGO_ENABLED
+go env GOOS
+go env GOARCH
+
+===
+amd64
+===
+SET CGO_ENABLED=0
+SET GOOS=linux
+SET GOARCH=amd64
+go build jt_monitor.go
+
+===
+arm64
+===
+
+SET CGO_ENABLED=0
+SET GOOS=linux
+SET GOARCH=arm64
+go build jt_monitor.go
+
+===
+windows
+===
+SET CGO_ENABLED=1
+SET GOOS=windows
+SET GOARCH=amd64
+go build jt_monitor.go
+
+
+
+
+
 ------
 打包压缩，git bash窗口
 cd /e/'2. work'/井系/'3. 链景'/井通新链/监控模块/bin
@@ -7,6 +49,7 @@ cd /e/'2. work'/井系/'3. 链景'/井通新链/监控模块/bin
 ===
 tar zcvf jt_monitor-0.0.5.linux-arm64.tar.gz jt_monitor-0.0.5.linux-arm64
 tar zcvf jt_monitor-0.0.6.linux-amd64.tar.gz jt_monitor-0.0.6.linux-amd64
+tar zcvf jt_monitor-0.0.9.linux-amd64.tar.gz jt_monitor-0.0.9.linux-amd64
 
 ===
 上传下载
@@ -29,46 +72,14 @@ tar zxvf jt_monitor_controller-0.0.4.linux-arm64.tar.gz
 chmod 777 jt_monitor_controller-0.0.4.linux-arm64 -R
 cd jt_monitor_controller-0.0.4.linux-arm64
 
-
-
-
-
-
 ------
-编译，cmd窗口
+完整安装包
+cd /e/'2. work'/井系/'3. 链景'/井通新链/监控模块/installation
+tar zcvf jt_supervisory-amd64-install-0.1.2.tar.gz jt_supervisory-amd64-install-0.1.2
+wget http://60.179.34.11:2811/e/file/download?code=190ad0be4dc2b033&id=44996
 
-cd E:\2. work\井系\3. 链景\井通新链\监控模块\codes\jingtum-monitor
+tar zxvf jt_supervisory-amd64-install-0.1.1.tar.gz
 
-===
-check env
-===
-go env CGO_ENABLED
-go env GOOS
-go env GOARCH
 
-===
-amd64
-===
-SET CGO_ENABLED=0
-SET GOOS=linux
-SET GOARCH=amd64
-go build jt_monitor.go 
-
-===
-arm64
-===
-
-SET CGO_ENABLED=0
-SET GOOS=linux
-SET GOARCH=arm64
-go build jt_monitor.go 
-
-===
-windows
-===
-SET CGO_ENABLED=1
-SET GOOS=windows
-SET GOARCH=amd64
-go build jt_monitor.go 
 
 

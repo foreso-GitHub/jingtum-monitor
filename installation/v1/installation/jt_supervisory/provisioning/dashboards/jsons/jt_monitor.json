@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
   "links": [],
   "panels": [
     {
@@ -279,6 +279,13 @@
           "refId": "A"
         },
         {
+          "expr": "jt_current_3blocks_tps",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Last 3 Blocks Tps",
+          "refId": "G"
+        },
+        {
           "expr": "jt_current_minute_tps",
           "instant": true,
           "interval": "",
@@ -367,8 +374,15 @@
           "expr": "jt_current_block_tps",
           "instant": false,
           "interval": "",
-          "legendFormat": "Current Block Tps",
+          "legendFormat": "Last Block Tps",
           "refId": "A"
+        },
+        {
+          "expr": "jt_current_3blocks_tps",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "Last 3 Blocks Tps",
+          "refId": "G"
         },
         {
           "expr": "jt_current_minute_tps",
@@ -472,5 +486,5 @@
   "variables": {
     "list": []
   },
-  "version": 5
+  "version": 1
 }
