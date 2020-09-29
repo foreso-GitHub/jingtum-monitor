@@ -30,13 +30,14 @@ func testRunTps(config common.ExporterConfig) {
 	//testLibrary(url)
 	//testTps(url)
 
-	//network := exporter.LoadJtNetworkConfig(config.JtConfigPath)
+	network := exporter.LoadJtNetworkConfig(config.JtConfigPath)
 	//nodes := network.NodeList
 	//url := exporter.GetRandUrl(nodes)
 
-	url, _, _ := exporter.GetBlockNumberByRandNode()
+	exporter.FlushNetwork(&network)
+	//url, _, _ := exporter.GetBlockNumberByRandNode()
 	//fmt.Printf("blockNumber: %+v\n", blockNumber)
-	testTps(url)
+	//testTps(url)
 	//testLibrary(url)
 }
 

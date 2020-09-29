@@ -111,7 +111,7 @@ func FlushNetwork(network *JtNetwork) {
 	}
 	network.OnlineRate = float32(network.OnlineNodeCount) / float32(network.NodeCount) * 100
 	network.ConsensusRate = float32(network.ConsensusNodeCount) / float32(network.NodeCount) * 100
-	log.Println("===network: %+v\n", network)
+	log.Println("===network: ", network)
 }
 
 func LoadJtNetworkConfig(path string) JtNetwork {

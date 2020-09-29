@@ -36,7 +36,7 @@ func GetBlockNumber(url string, args ...interface{}) (interface{}, error) {
 	if err := json.Unmarshal(jsonString, &blockNumberJson); err == nil {
 		return blockNumberJson.BlockNumber, nil
 	} else {
-		log.Println("[jt_blockNumber] error: ", err, " | ", jsonString)
+		log.Println("[jt_blockNumber] error: ", err, " | ", string(jsonString))
 		return -104, err
 	}
 }
@@ -51,20 +51,26 @@ func GetBlockNumberByRandNode() (string, int, error) {
 //region get block by number
 
 func GetBlockByNumber(url string, args ...interface{}) (interface{}, error) {
+	var block JtBlock
 	blockNumber := (args[0].([]interface{}))[0].(int)
+	if blockNumber < 0 {
+		err := errors.New("BlockNumber must be larger than 0!")
+		log.Println("[jt_getBlockByNumber] error: ", err)
+		return &block, err
+	}
 	params := GenerateRequest("jt_getBlockByNumber", "\""+strconv.Itoa(blockNumber)+"\",false")
 	jsonString, err := Post(url, CONTENT_TYPE, params)
 	if err != nil {
 		log.Println("[jt_getBlockByNumber] error: ", err)
-		return GetJtErrorCode(err.Error()), err
+		return &block, err
 	}
 
 	var blockJson BlockJson
 	if err := json.Unmarshal(jsonString, &blockJson); err == nil {
 		return &blockJson.Block, nil
 	} else {
-		log.Println("[jt_getBlockByNumber] error: ", err, " | ", jsonString)
-		return -104, err
+		log.Println("[jt_getBlockByNumber] error: ", err, " | ", string(jsonString))
+		return &block, err
 	}
 }
 
