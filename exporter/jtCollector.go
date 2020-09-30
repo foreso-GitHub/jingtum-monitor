@@ -10,20 +10,20 @@ var config = common.LoadConfig("./config/config.json")
 var firstCollect = true
 var tpsStatus = CreateJtTpsStatus(-1)
 
-var nodeCount int32
-var onlineNodeCount int32
-var consensusNodeCount int32
-var blockNumber int32
-
-var blockTps float32
-var block3Tps float32
-var minuteTps float32
-var hourTps float32
-var dayTps float32
-var weekTps float32
-var highestTps float32
-var totalTps float32
-
+//var nodeCount int32
+//var onlineNodeCount int32
+//var consensusNodeCount int32
+//var blockNumber int32
+//
+//var blockTps float32
+//var block3Tps float32
+//var minuteTps float32
+//var hourTps float32
+//var dayTps float32
+//var weekTps float32
+//var highestTps float32
+//var totalTps float32
+//
 //var blockTxCount int32
 
 type JtCollector struct {
@@ -40,6 +40,7 @@ type JtCollector struct {
 	weekTpsDesc            *prometheus.Desc
 	totalTpsDesc           *prometheus.Desc
 	highestTpsDesc         *prometheus.Desc
+	localBlockNumberDesc   *prometheus.Desc
 	guard                  sync.Mutex
 }
 
@@ -97,6 +98,10 @@ func NewJtCollector() prometheus.Collector {
 			"jt_highest_tps",
 			"井通区块链网络峰值TPS",
 			nil, nil),
+		localBlockNumberDesc: prometheus.NewDesc(
+			"jt_local_block_number",
+			"井通本地节点当前的区块高度",
+			nil, nil),
 	}
 }
 
@@ -115,23 +120,34 @@ func (n *JtCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- n.weekTpsDesc
 	ch <- n.totalTpsDesc
 	ch <- n.highestTpsDesc
+
+	ch <- n.localBlockNumberDesc
 }
 
 func (n *JtCollector) Collect(ch chan<- prometheus.Metric) {
-	//flush blockchain network
-	network := LoadJtNetworkConfig(config.JtConfigPath)
-	FlushNetwork(&network)
 
-	//flush tps
+	network := LoadJtNetworkConfig(config.JtConfigPath)
 	if firstCollect {
 		_, blockNumber, _ := GetBlockNumberByRandNode()
 		tpsStatus = CreateJtTpsStatus(blockNumber)
 		firstCollect = false
 	}
-	_ = FlushTpsStatus(tpsStatus)
+	localNode := config.LocalJtNode
+
+	if config.SupervisorMode == 1 || config.SupervisorMode == 3 {
+		FlushNetwork(&network)        //flush blockchain network
+		_ = FlushTpsStatus(tpsStatus) //flush tps
+	}
+
+	if config.SupervisorMode == 2 || config.SupervisorMode == 3 {
+		FlushNode(&localNode)
+	}
+
+	//region system logs
+
 	//flushOK := FlushTpsStatus(tpsStatus)
 	//log.Println("flushOK: %+v\n", flushOK)
-
+	//
 	//log.Println("(network.NodeCount): ", float64(network.NodeCount))
 	//log.Println("(network.OnlineNodeCount): ", float64(network.OnlineNodeCount))
 	//log.Println("(network.ConsensusNodeCount): ", float64(network.ConsensusNodeCount))
@@ -145,6 +161,10 @@ func (n *JtCollector) Collect(ch chan<- prometheus.Metric) {
 	//log.Println("TpsMap[1*12*60*24]: ", tpsStatus.TpsMap[1*12*60*24].Tps)
 	//log.Println("TpsMap[1*12*60*24*7]: ", tpsStatus.TpsMap[1*12*60*24*7].Tps)
 	//log.Println("tpsStatus.TotalTps: ", tpsStatus.TotalTps)
+
+	//log.Println("localNode.BlockNumber: ", localNode.BlockNumber)
+
+	//endregion
 
 	n.guard.Lock()
 	ch <- prometheus.MustNewConstMetric(n.nodeCountDesc, prometheus.GaugeValue, float64(network.NodeCount))
@@ -160,5 +180,7 @@ func (n *JtCollector) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(n.dayTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1*12*60*24].Tps)
 	ch <- prometheus.MustNewConstMetric(n.weekTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1*12*60*24*7].Tps)
 	ch <- prometheus.MustNewConstMetric(n.totalTpsDesc, prometheus.GaugeValue, tpsStatus.TotalTps)
+
+	ch <- prometheus.MustNewConstMetric(n.localBlockNumberDesc, prometheus.GaugeValue, float64(localNode.BlockNumber))
 	n.guard.Unlock()
 }

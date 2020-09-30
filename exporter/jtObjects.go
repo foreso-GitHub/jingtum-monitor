@@ -3,73 +3,12 @@ package exporter
 import (
 	"encoding/json"
 	"github.com/foreso-GitHub/jingtum-monitor/common"
+	"github.com/foreso-GitHub/jingtum-monitor/types"
 	"io/ioutil"
 	"log"
 )
 
-//region define jt objects
-
-type JtBlock struct {
-	Accepted              bool     `json:"accepted"`
-	Account_hash          string   `json:"account_hash"`
-	Close_flags           int      `json:"close_flags"`
-	Close_time            int      `json:"close_time"`
-	Close_time_human      string   `json:"close_time_human"`
-	Close_time_resolution int      `json:"close_time_resolution"`
-	Closed                bool     `json:"closed"`
-	Hash                  string   `json:"hash"`
-	Ledger_hash           string   `json:"ledger_hash"`
-	Ledger_index          string   `json:"ledger_index"`
-	Parent_close_time     int      `json:"parent_close_time"`
-	Parent_hash           string   `json:"parent_hash"`
-	SeqNum                string   `json:"seqNum"`
-	TotalCoins            string   `json:"totalCoins"`
-	Total_coins           string   `json:"total_coins"`
-	Transaction_hash      string   `json:"transaction_hash"`
-	Transactions          []string `json:"transactions"`
-}
-
-type JtNode struct {
-	Ip          string `json:"ip"`
-	Port        string `json:"port"`
-	Name        string `json:"name"`
-	Online      bool
-	Consensus   bool
-	BlockNumber int
-	//LatestBlock JtBlock
-}
-
-type JtNetwork struct {
-	Name               string `json:"name"`
-	NodeCount          int
-	NodeList           []JtNode `json:"nodes"`
-	OnlineNodeCount    int
-	OnlineRate         float32
-	ConsensusNodeCount int
-	ConsensusRate      float32
-	BlockNumber        int
-	LatestBlock        JtBlock
-}
-
-type JtResponseJson struct {
-	Jsonrpc string `json:"jsonrpc"`
-	Id      int    `json:"id"`
-	Status  string `json:"status"`
-}
-
-type BlockNumberJson struct {
-	JtResponseJson
-	BlockNumber int `json:"result"`
-}
-
-type BlockJson struct {
-	JtResponseJson
-	Block JtBlock `json:"result"`
-}
-
-//endregion
-
-func FlushNode(node *JtNode) {
+func FlushNode(node *types.JtNode) {
 	url := "http://" + node.Ip + ":" + node.Port + "/v1/jsonrpc" //请求地址
 
 	blockNumber, err := GetBlockNumberByNode(url)
@@ -82,7 +21,7 @@ func FlushNode(node *JtNode) {
 	//log.Println("===node: %+v\n", node)
 }
 
-func FlushNetwork(network *JtNetwork) {
+func FlushNetwork(network *types.JtNetwork) {
 	network.NodeCount = len(network.NodeList)
 	network.BlockNumber = -1
 	network.OnlineNodeCount = 0
@@ -110,8 +49,8 @@ func FlushNetwork(network *JtNetwork) {
 	log.Println("===network: ", network)
 }
 
-func LoadJtNetworkConfig(path string) JtNetwork {
-	var network JtNetwork
+func LoadJtNetworkConfig(path string) types.JtNetwork {
+	var network types.JtNetwork
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Panicln("load config file failed: ", err)
@@ -123,12 +62,12 @@ func LoadJtNetworkConfig(path string) JtNetwork {
 	return network
 }
 
-func GetUrlFromNode(node *JtNode) string {
+func GetUrlFromNode(node *types.JtNode) string {
 	url := "http://" + node.Ip + ":" + node.Port + "/v1/jsonrpc" //请求地址
 	return url
 }
 
-func PickNode(nodes []JtNode) *JtNode {
+func PickNode(nodes []types.JtNode) *types.JtNode {
 	count := len(nodes)
 	if count > 0 {
 		index := common.Rand(count)
@@ -138,7 +77,7 @@ func PickNode(nodes []JtNode) *JtNode {
 	}
 }
 
-func GetRandUrl(nodes []JtNode) string {
+func GetRandUrl(nodes []types.JtNode) string {
 	node := PickNode(nodes)
 	url := GetUrlFromNode(node)
 	//_, error := GetBlockNumber(url)

@@ -4,6 +4,7 @@
   "supervisorMode": 1,
   "requestTimeout": 2000,
   "requestRetrySpan": 1000,
-  "requestRetryLimit": 10
+  "requestRetryLimit": 10,
+  "localJtNode" : {"name":"localNode","ip":"localhost","port":"9545"}
 }
 

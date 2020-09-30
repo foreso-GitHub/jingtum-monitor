@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/foreso-GitHub/jingtum-monitor/types"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -32,7 +33,7 @@ func GetBlockNumber(url string, args ...interface{}) (interface{}, error) {
 		return GetJtErrorCode(err.Error()), err
 	}
 
-	var blockNumberJson BlockNumberJson
+	var blockNumberJson types.BlockNumberJson
 	if err := json.Unmarshal(jsonString, &blockNumberJson); err == nil {
 		return blockNumberJson.BlockNumber, nil
 	} else {
@@ -51,7 +52,7 @@ func GetBlockNumberByRandNode() (string, int, error) {
 //region get block by number
 
 func GetBlockByNumber(url string, args ...interface{}) (interface{}, error) {
-	var block JtBlock
+	var block types.JtBlock
 	blockNumber := (args[0].([]interface{}))[0].(int)
 	if blockNumber < 0 {
 		err := errors.New("BlockNumber must be larger than 0!")
@@ -65,7 +66,7 @@ func GetBlockByNumber(url string, args ...interface{}) (interface{}, error) {
 		return &block, err
 	}
 
-	var blockJson BlockJson
+	var blockJson types.BlockJson
 	if err := json.Unmarshal(jsonString, &blockJson); err == nil {
 		return &blockJson.Block, nil
 	} else {
@@ -74,9 +75,9 @@ func GetBlockByNumber(url string, args ...interface{}) (interface{}, error) {
 	}
 }
 
-func GetBlockByNumberByRandNode(blockNumber int) (string, *JtBlock, error) {
+func GetBlockByNumberByRandNode(blockNumber int) (string, *types.JtBlock, error) {
 	url, block, err := getJtInfo(GetBlockByNumber, blockNumber)
-	return url, block.(*JtBlock), err
+	return url, block.(*types.JtBlock), err
 }
 
 //endregion
@@ -93,7 +94,8 @@ func getJtInfo(jtFunction interface{}, jtFunctionArgs ...interface{}) (string, i
 
 var connectedUrl = ""
 
-func getJtInfoByNodes(nodes []JtNode, retryLimit int, retriedCount int, jtFunction interface{}, jtFunctionArgs ...interface{}) (string, interface{}, error) {
+func getJtInfoByNodes(nodes []types.JtNode, retryLimit int, retriedCount int,
+	jtFunction interface{}, jtFunctionArgs ...interface{}) (string, interface{}, error) {
 	var url = ""
 	if connectedUrl == "" {
 		url = GetRandUrl(nodes)

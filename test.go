@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/foreso-GitHub/jingtum-monitor/common"
 	"github.com/foreso-GitHub/jingtum-monitor/exporter"
+	"log"
 	"time"
 )
 
@@ -39,6 +40,14 @@ func testRunTps(config common.ExporterConfig) {
 	//fmt.Printf("blockNumber: %+v\n", blockNumber)
 	testTps(url)
 	//testLibrary(url)
+
+	//var localNode = new(types.JtNode)
+	//localNode.Name = "jt-node-ty"
+	//localNode.Ip = "61.171.12.71"
+	//localNode.Port = "9545"
+	var localNode = config.LocalJtNode
+	exporter.FlushNode(&localNode)
+	log.Println("localNode.BlockNumber: ", localNode.BlockNumber)
 }
 
 func testLibrary(url string) {
