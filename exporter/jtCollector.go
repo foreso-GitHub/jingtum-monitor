@@ -126,61 +126,67 @@ func (n *JtCollector) Describe(ch chan<- *prometheus.Desc) {
 
 func (n *JtCollector) Collect(ch chan<- prometheus.Metric) {
 
-	network := LoadJtNetworkConfig(config.JtConfigPath)
-	if firstCollect {
-		_, blockNumber, _ := GetBlockNumberByRandNode()
-		tpsStatus = CreateJtTpsStatus(blockNumber)
-		firstCollect = false
-	}
-	localNode := config.LocalJtNode
-
 	if config.SupervisorMode == 1 || config.SupervisorMode == 3 {
+		network := LoadJtNetworkConfig(config.JtConfigPath)
+		if firstCollect {
+			_, blockNumber, _ := GetBlockNumberByRandNode()
+			tpsStatus = CreateJtTpsStatus(blockNumber)
+			firstCollect = false
+		}
+
 		FlushNetwork(&network)        //flush blockchain network
 		_ = FlushTpsStatus(tpsStatus) //flush tps
+
+		//region system logs
+
+		//flushOK := FlushTpsStatus(tpsStatus)
+		//log.Println("flushOK: %+v\n", flushOK)
+		//
+		//log.Println("(network.NodeCount): ", float64(network.NodeCount))
+		//log.Println("(network.OnlineNodeCount): ", float64(network.OnlineNodeCount))
+		//log.Println("(network.ConsensusNodeCount): ", float64(network.ConsensusNodeCount))
+		//log.Println("(network.BlockNumber): ", float64(network.BlockNumber))
+		//log.Println("(len(network.LatestBlock.Transactions)): ", float64(len(network.LatestBlock.Transactions)))
+		//
+		//log.Println("TpsMap[1]: ", tpsStatus.TpsMap[1].Tps)
+		//log.Println("TpsMap[3]: ", tpsStatus.TpsMap[3].Tps)
+		//log.Println("TpsMap[1*12]: ", tpsStatus.TpsMap[1*12].Tps)
+		//log.Println("TpsMap[1*12*60]: ", tpsStatus.TpsMap[1*12*60].Tps)
+		//log.Println("TpsMap[1*12*60*24]: ", tpsStatus.TpsMap[1*12*60*24].Tps)
+		//log.Println("TpsMap[1*12*60*24*7]: ", tpsStatus.TpsMap[1*12*60*24*7].Tps)
+		//log.Println("tpsStatus.TotalTps: ", tpsStatus.TotalTps)
+
+		//endregion
+
+		n.guard.Lock()
+
+		ch <- prometheus.MustNewConstMetric(n.nodeCountDesc, prometheus.GaugeValue, float64(network.NodeCount))
+		ch <- prometheus.MustNewConstMetric(n.onlineNodeCountDesc, prometheus.GaugeValue, float64(network.OnlineNodeCount))
+		ch <- prometheus.MustNewConstMetric(n.consensusNodeCountDesc, prometheus.GaugeValue, float64(network.ConsensusNodeCount))
+		ch <- prometheus.MustNewConstMetric(n.jtBlockNumberDesc, prometheus.GaugeValue, float64(network.BlockNumber))
+		ch <- prometheus.MustNewConstMetric(n.jtBlockTxCountDesc, prometheus.GaugeValue, float64(len(network.LatestBlock.Transactions)))
+
+		ch <- prometheus.MustNewConstMetric(n.blockTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1].Tps)
+		ch <- prometheus.MustNewConstMetric(n.block3TpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[3].Tps)
+		ch <- prometheus.MustNewConstMetric(n.minuteTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1*12].Tps)
+		ch <- prometheus.MustNewConstMetric(n.hourTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1*12*60].Tps)
+		ch <- prometheus.MustNewConstMetric(n.dayTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1*12*60*24].Tps)
+		ch <- prometheus.MustNewConstMetric(n.weekTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1*12*60*24*7].Tps)
+		ch <- prometheus.MustNewConstMetric(n.totalTpsDesc, prometheus.GaugeValue, tpsStatus.TotalTps)
+
+		n.guard.Unlock()
+
 	}
 
 	if config.SupervisorMode == 2 || config.SupervisorMode == 3 {
+		localNode := config.LocalJtNode
 		FlushNode(&localNode)
+		//region system logs
+		//log.Println("localNode.BlockNumber: ", localNode.BlockNumber)
+		//endregion
+		n.guard.Lock()
+		ch <- prometheus.MustNewConstMetric(n.localBlockNumberDesc, prometheus.GaugeValue, float64(localNode.BlockNumber))
+		n.guard.Unlock()
 	}
 
-	//region system logs
-
-	//flushOK := FlushTpsStatus(tpsStatus)
-	//log.Println("flushOK: %+v\n", flushOK)
-	//
-	//log.Println("(network.NodeCount): ", float64(network.NodeCount))
-	//log.Println("(network.OnlineNodeCount): ", float64(network.OnlineNodeCount))
-	//log.Println("(network.ConsensusNodeCount): ", float64(network.ConsensusNodeCount))
-	//log.Println("(network.BlockNumber): ", float64(network.BlockNumber))
-	//log.Println("(len(network.LatestBlock.Transactions)): ", float64(len(network.LatestBlock.Transactions)))
-	//
-	//log.Println("TpsMap[1]: ", tpsStatus.TpsMap[1].Tps)
-	//log.Println("TpsMap[3]: ", tpsStatus.TpsMap[3].Tps)
-	//log.Println("TpsMap[1*12]: ", tpsStatus.TpsMap[1*12].Tps)
-	//log.Println("TpsMap[1*12*60]: ", tpsStatus.TpsMap[1*12*60].Tps)
-	//log.Println("TpsMap[1*12*60*24]: ", tpsStatus.TpsMap[1*12*60*24].Tps)
-	//log.Println("TpsMap[1*12*60*24*7]: ", tpsStatus.TpsMap[1*12*60*24*7].Tps)
-	//log.Println("tpsStatus.TotalTps: ", tpsStatus.TotalTps)
-
-	//log.Println("localNode.BlockNumber: ", localNode.BlockNumber)
-
-	//endregion
-
-	n.guard.Lock()
-	ch <- prometheus.MustNewConstMetric(n.nodeCountDesc, prometheus.GaugeValue, float64(network.NodeCount))
-	ch <- prometheus.MustNewConstMetric(n.onlineNodeCountDesc, prometheus.GaugeValue, float64(network.OnlineNodeCount))
-	ch <- prometheus.MustNewConstMetric(n.consensusNodeCountDesc, prometheus.GaugeValue, float64(network.ConsensusNodeCount))
-	ch <- prometheus.MustNewConstMetric(n.jtBlockNumberDesc, prometheus.GaugeValue, float64(network.BlockNumber))
-	ch <- prometheus.MustNewConstMetric(n.jtBlockTxCountDesc, prometheus.GaugeValue, float64(len(network.LatestBlock.Transactions)))
-
-	ch <- prometheus.MustNewConstMetric(n.blockTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1].Tps)
-	ch <- prometheus.MustNewConstMetric(n.block3TpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[3].Tps)
-	ch <- prometheus.MustNewConstMetric(n.minuteTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1*12].Tps)
-	ch <- prometheus.MustNewConstMetric(n.hourTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1*12*60].Tps)
-	ch <- prometheus.MustNewConstMetric(n.dayTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1*12*60*24].Tps)
-	ch <- prometheus.MustNewConstMetric(n.weekTpsDesc, prometheus.GaugeValue, tpsStatus.TpsMap[1*12*60*24*7].Tps)
-	ch <- prometheus.MustNewConstMetric(n.totalTpsDesc, prometheus.GaugeValue, tpsStatus.TotalTps)
-
-	ch <- prometheus.MustNewConstMetric(n.localBlockNumberDesc, prometheus.GaugeValue, float64(localNode.BlockNumber))
-	n.guard.Unlock()
 }

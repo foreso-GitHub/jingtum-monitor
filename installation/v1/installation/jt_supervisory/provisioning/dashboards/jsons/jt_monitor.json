@@ -61,14 +61,14 @@
       "pluginVersion": "6.7.3",
       "targets": [
         {
-          "expr": "jt_block_number",
+          "expr": "jt_block_number{job=\"jt_monitor\"}",
           "instant": true,
           "interval": "",
           "legendFormat": "Block Height",
           "refId": "A"
         },
         {
-          "expr": "jt_current_block_tx_count",
+          "expr": "jt_current_block_tx_count{job=\"jt_monitor\"}",
           "instant": true,
           "interval": "",
           "legendFormat": "Tx Count",
@@ -121,21 +121,21 @@
       "pluginVersion": "6.7.3",
       "targets": [
         {
-          "expr": "jt_total_node_count",
+          "expr": "jt_total_node_count{job=\"jt_monitor\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "Total ",
           "refId": "A"
         },
         {
-          "expr": "jt_online_node_count",
+          "expr": "jt_online_node_count{job=\"jt_monitor\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "Online ",
           "refId": "B"
         },
         {
-          "expr": "jt_consensus_node_count",
+          "expr": "jt_consensus_node_count{job=\"jt_monitor\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "Consensus ",
@@ -207,9 +207,9 @@
       ],
       "targets": [
         {
-          "expr": "jt_block_number{job=\"jt_monitor\"}",
+          "expr": "jt_local_block_number",
           "format": "table",
-          "instant": false,
+          "instant": true,
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -264,7 +264,7 @@
       "pluginVersion": "6.7.3",
       "targets": [
         {
-          "expr": "jt_average_tps",
+          "expr": "jt_average_tps{job=\"jt_monitor\"}",
           "hide": false,
           "instant": true,
           "interval": "",
@@ -272,42 +272,42 @@
           "refId": "B"
         },
         {
-          "expr": "jt_current_block_tps",
+          "expr": "jt_current_block_tps{job=\"jt_monitor\"}",
           "instant": true,
           "interval": "",
           "legendFormat": "Last Block Tps",
           "refId": "A"
         },
         {
-          "expr": "jt_current_3blocks_tps",
+          "expr": "jt_current_3blocks_tps{job=\"jt_monitor\"}",
           "instant": true,
           "interval": "",
           "legendFormat": "Last 3 Blocks Tps",
           "refId": "G"
         },
         {
-          "expr": "jt_current_minute_tps",
+          "expr": "jt_current_minute_tps{job=\"jt_monitor\"}",
           "instant": true,
           "interval": "",
           "legendFormat": "Last Minute Tps",
           "refId": "C"
         },
         {
-          "expr": "jt_current_hour_tps",
+          "expr": "jt_current_hour_tps{job=\"jt_monitor\"}",
           "instant": true,
           "interval": "",
           "legendFormat": "Last Hour Tps",
           "refId": "D"
         },
         {
-          "expr": "jt_current_day_tps",
+          "expr": "jt_current_day_tps{job=\"jt_monitor\"}",
           "instant": true,
           "interval": "",
           "legendFormat": "Last Day Tps",
           "refId": "E"
         },
         {
-          "expr": "jt_current_week_tps",
+          "expr": "jt_current_week_tps{job=\"jt_monitor\"}",
           "instant": true,
           "interval": "",
           "legendFormat": "Last Week Tps",
@@ -363,7 +363,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "jt_average_tps",
+          "expr": "jt_average_tps{job=\"jt_monitor\"}",
           "hide": false,
           "instant": false,
           "interval": "",
@@ -371,42 +371,42 @@
           "refId": "B"
         },
         {
-          "expr": "jt_current_block_tps",
+          "expr": "jt_current_block_tps{job=\"jt_monitor\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "Last Block Tps",
           "refId": "A"
         },
         {
-          "expr": "jt_current_3blocks_tps",
+          "expr": "jt_current_3blocks_tps{job=\"jt_monitor\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "Last 3 Blocks Tps",
           "refId": "G"
         },
         {
-          "expr": "jt_current_minute_tps",
+          "expr": "jt_current_minute_tps{job=\"jt_monitor\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "Last Minute Tps",
           "refId": "C"
         },
         {
-          "expr": "jt_current_hour_tps",
+          "expr": "jt_current_hour_tps{job=\"jt_monitor\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "Last Hour Tps",
           "refId": "D"
         },
         {
-          "expr": "jt_current_day_tps",
+          "expr": "jt_current_day_tps{job=\"jt_monitor\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "Last Day Tps",
           "refId": "E"
         },
         {
-          "expr": "jt_current_week_tps",
+          "expr": "jt_current_week_tps{job=\"jt_monitor\"}",
           "instant": false,
           "interval": "",
           "legendFormat": "Last Week Tps",
