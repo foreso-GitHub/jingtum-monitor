@@ -2,7 +2,7 @@
 home="/jt/monitor"
 path_install=$home"/install/jt_supervisory"
 path_system="/lib/systemd/system"
-name_jt_monitor="jt_monitor-0.0.7.linux-amd64"
+name_jt_monitor="jt_monitor-0.0.12.linux-amd64"
 path_jt_monitor=$home/$name_jt_monitor
 file_name_jt_monitor_service="jt_monitor.service"
 file_jt_monitor_sh=$path_jt_monitor"/start.sh"
@@ -44,7 +44,7 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable jt_monitor
 sudo systemctl start jt_monitor
-sudo systemctl status jt_monitor
+#sudo systemctl status jt_monitor
 #sudo journalctl -f -u jt_monitor
 
 cd $home

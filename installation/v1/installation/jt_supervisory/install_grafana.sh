@@ -57,7 +57,7 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable grafana
 sudo systemctl start grafana
-sudo systemctl status grafana
+#sudo systemctl status grafana
 #sudo journalctl -f -u grafana
 
 cd $home
