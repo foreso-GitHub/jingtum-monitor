@@ -1,7 +1,7 @@
 #!/bin/bash
-name_install="jt_supervisory-amd64-install-0.1.0"
+name_install="jt_supervisory-amd64-install-0.1.4"
 file_install=$name_install".tar.gz"
-url="https://www.yiyuen.com/e/file/download?code=f33f826ece8555ac&id=28395"
+url="http://60.179.35.215:2811/e/file/download?code=b1dcc751639e1ba8&id=45445"
 
 pwd
 output=`wget -O $file_install $url`
