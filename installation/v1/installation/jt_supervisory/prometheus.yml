@@ -87,3 +87,20 @@ scrape_configs:
   - job_name: "spv-ty"
     static_configs:
       - targets: ["61.171.12.71:9101"]
+
+  - job_name: 'spv-al-2'
+    static_configs:
+      - targets: ["121.89.212.154:9101"]
+
+  - job_name: 'spv-al-3'
+    static_configs:
+      - targets: ["121.89.207.217:9101"]
+
+  - job_name: 'spv-al-4'
+    static_configs:
+      - targets: ["121.89.206.115:9101"]
+
+  - job_name: 'spv-al-5'
+    static_configs:
+      - targets: ["121.89.198.119:9101"]
+
