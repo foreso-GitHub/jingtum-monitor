@@ -1,11 +1,19 @@
 {
   "name":"Jingtum Network @ clouds",
   "nodes": [
-    {"name":"jt-node-al","ip":"121.89.209.19","port":"9545"},
+    {"name":"jt-node-al-01","ip":"121.89.209.19","port":"9545"},
     {"name":"jt-node-bd","ip":"180.76.125.22","port":"9545"},
     {"name":"jt-node-tx","ip":"45.40.240.50","port":"9545"},
     {"name":"jt-node-hw","ip":"121.37.216.100","port":"9545"},
-    {"name":"jt-node-ty","ip":"61.171.12.71","port":"9545"}
+    {"name":"jt-node-ty","ip":"61.171.12.71","port":"9545"},
+    {"name":"jt-node-al-02","ip":"121.89.212.154","port":"9545"},
+    {"name":"jt-node-al-03","ip":"121.89.207.217","port":"9545"},
+    {"name":"jt-node-al-04","ip":"121.89.206.115","port":"9545"},
+    {"name":"jt-node-al-05","ip":"121.89.198.119","port":"9545"}
   ]
 }
+
+
+
+
 
