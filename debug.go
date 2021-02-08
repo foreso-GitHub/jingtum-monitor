@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/foreso-GitHub/jingtum-monitor/common"
 	"github.com/foreso-GitHub/jingtum-monitor/exporter"
-	"log"
 	"time"
 )
 
@@ -13,7 +12,7 @@ var tpsStatus = exporter.CreateJtTpsStatus(-1)
 var connectedUrl = ""
 var config = common.LoadConfig("./config/config.json")
 
-func test() {
+func debug() {
 	config := common.LoadConfig("./config/config.json")
 
 	//region test
@@ -39,15 +38,15 @@ func testRunTps(config common.ExporterConfig) {
 	url, _, _ := exporter.GetBlockNumberByRandNode()
 	//fmt.Printf("blockNumber: %+v\n", blockNumber)
 	testTps(url)
-	//testLibrary(url)
+	testLibrary(url)
 
 	//var localNode = new(types.JtNode)
 	//localNode.Name = "jt-node-ty"
 	//localNode.Ip = "61.171.12.71"
 	//localNode.Port = "9545"
-	var localNode = config.LocalJtNode
-	exporter.FlushNode(&localNode)
-	log.Println("localNode.BlockNumber: ", localNode.BlockNumber)
+	//var localNode = config.LocalJtNode
+	//exporter.FlushNode(&localNode)
+	//log.Println("localNode.BlockNumber: ", localNode.BlockNumber)
 }
 
 func testLibrary(url string) {
@@ -65,7 +64,7 @@ func testTps(url string) {
 	fmt.Printf("Url: %v\n", url)
 	if firstCollect {
 		blockNumber, _ := exporter.GetBlockNumberByNode(url)
-		//fmt.Printf("blockNumber: %+v\n", blockNumber)
+		fmt.Printf("blockNumber: %+v\n", blockNumber)
 		tpsStatus = exporter.CreateJtTpsStatus(blockNumber)
 		firstCollect = false
 	}

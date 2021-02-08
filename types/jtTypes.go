@@ -2,26 +2,6 @@ package types
 
 //region define jt objects
 
-type JtBlock struct {
-	Accepted              bool     `json:"accepted"`
-	Account_hash          string   `json:"account_hash"`
-	Close_flags           int      `json:"close_flags"`
-	Close_time            int      `json:"close_time"`
-	Close_time_human      string   `json:"close_time_human"`
-	Close_time_resolution int      `json:"close_time_resolution"`
-	Closed                bool     `json:"closed"`
-	Hash                  string   `json:"hash"`
-	Ledger_hash           string   `json:"ledger_hash"`
-	Ledger_index          string   `json:"ledger_index"`
-	Parent_close_time     int      `json:"parent_close_time"`
-	Parent_hash           string   `json:"parent_hash"`
-	SeqNum                string   `json:"seqNum"`
-	TotalCoins            string   `json:"totalCoins"`
-	Total_coins           string   `json:"total_coins"`
-	Transaction_hash      string   `json:"transaction_hash"`
-	Transactions          []string `json:"transactions"`
-}
-
 type JtNode struct {
 	Ip          string `json:"ip"`
 	Port        string `json:"port"`
@@ -44,21 +24,79 @@ type JtNetwork struct {
 	LatestBlock        JtBlock
 }
 
+//region jt response
+
 type JtResponseJson struct {
-	Jsonrpc string `json:"jsonrpc"`
-	Id      int    `json:"id"`
-	Status  string `json:"status"`
+	Jsonrpc string      `json:"jsonrpc"`
+	Id      int         `json:"id"`
+	Status  int         `json:"status"`
+	Type    string      `json:"type"`
+	Error   JtErrorJson `json:"error"`
 }
 
-type BlockNumberJson struct {
-	JtResponseJson
+type JtErrorJson struct {
+	Count int    `json:"count"`
+	Desc  string `json:"desc"`
+	Info  string `json:"info"`
+}
+
+//endregion
+
+//region blockNumber
+
+type JtGetBlockNumberParam struct {
+	Type string `json:"type"`
+}
+
+type JtGetBlockNumberResult struct {
 	BlockNumber int `json:"result"`
 }
 
-type BlockJson struct {
+type JtGetBlockNumberResponse struct {
 	JtResponseJson
+	Results []JtGetBlockNumberResult `json:"result"`
+}
+
+//endregion
+
+//region block
+
+type JtGetBlockParam struct {
+	Number string `json:"number"`
+	Full   bool   `json:"full"`
+	//Ledger	string			`json:"ledger"`
+}
+
+type JtBlock struct {
+	Accepted              bool     `json:"accepted"`
+	Account_hash          string   `json:"account_hash"`
+	Close_flags           int      `json:"close_flags"`
+	Close_time            int      `json:"close_time"`
+	Close_time_human      string   `json:"close_time_human"`
+	Close_time_resolution int      `json:"close_time_resolution"`
+	Closed                bool     `json:"closed"`
+	Hash                  string   `json:"hash"`
+	Ledger_hash           string   `json:"ledger_hash"`
+	Ledger_index          string   `json:"ledger_index"`
+	Parent_close_time     int      `json:"parent_close_time"`
+	Parent_hash           string   `json:"parent_hash"`
+	SeqNum                string   `json:"seqNum"`
+	TotalCoins            string   `json:"totalCoins"`
+	Total_coins           string   `json:"total_coins"`
+	Transaction_hash      string   `json:"transaction_hash"`
+	Transactions          []string `json:"transactions"`
+}
+
+type JtGetBlockResult struct {
 	Block JtBlock `json:"result"`
 }
+
+type JtGetBlockResponse struct {
+	JtResponseJson
+	Results []JtGetBlockResult `json:"result"`
+}
+
+//endregion
 
 //endregion
 

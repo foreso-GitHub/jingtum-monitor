@@ -15,7 +15,7 @@ func init() {
 }
 
 func main() {
-	//test()
+	//debug()
 
 	config := common.LoadConfig("./config/config.json")
 	http.Handle("/metrics", promhttp.Handler())

@@ -26,16 +26,21 @@ func GetBlockNumberByNode(url string) (int, error) {
 }
 
 func GetBlockNumber(url string, args ...interface{}) (interface{}, error) {
-	params := GenerateRequest("jt_blockNumber", "")
+	var param types.JtGetBlockNumberParam
+	param.Type = "number"
+	paramBytes, err := json.Marshal(param)
+	params := GenerateRequest("jt_blockNumber", string(paramBytes))
+
 	jsonString, err := Post(url, CONTENT_TYPE, params)
 	if err != nil {
 		log.Println("[jt_blockNumber] error: ", err)
 		return GetJtErrorCode(err.Error()), err
 	}
 
-	var blockNumberJson types.BlockNumberJson
-	if err := json.Unmarshal(jsonString, &blockNumberJson); err == nil {
-		return blockNumberJson.BlockNumber, nil
+	var blockNumberResponse types.JtGetBlockNumberResponse
+	if err := json.Unmarshal(jsonString, &blockNumberResponse); err == nil {
+		blockNumber := blockNumberResponse.Results[0].BlockNumber
+		return blockNumber, nil
 	} else {
 		log.Println("[jt_blockNumber] error: ", err, " | ", string(jsonString))
 		return -104, err
@@ -59,18 +64,26 @@ func GetBlockByNumber(url string, args ...interface{}) (interface{}, error) {
 		log.Println("[jt_getBlockByNumber] error: ", err)
 		return &block, err
 	}
-	params := GenerateRequest("jt_getBlockByNumber", "\""+strconv.Itoa(blockNumber)+"\",false")
-	jsonString, err := Post(url, CONTENT_TYPE, params)
+
+	var param types.JtGetBlockParam
+	param.Number = strconv.Itoa(blockNumber)
+	param.Full = false
+	paramBytes, err := json.Marshal(param)
+	params := GenerateRequest("jt_getBlockByNumber", string(paramBytes))
+
+	jsonBytes, err := Post(url, CONTENT_TYPE, params)
 	if err != nil {
 		log.Println("[jt_getBlockByNumber] error: ", err)
 		return &block, err
 	}
 
-	var blockJson types.BlockJson
-	if err := json.Unmarshal(jsonString, &blockJson); err == nil {
-		return &blockJson.Block, nil
+	var blockResponse types.JtGetBlockResponse
+	if err := json.Unmarshal(jsonBytes, &blockResponse); err == nil {
+		blockResult := blockResponse.Results[0]
+		block := blockResult.Block
+		return &block, nil
 	} else {
-		log.Println("[jt_getBlockByNumber] error: ", err, " | ", string(jsonString))
+		log.Println("[jt_getBlockByNumber] error: ", err, " | ", string(jsonBytes))
 		return &block, err
 	}
 }
